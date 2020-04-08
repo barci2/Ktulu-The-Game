@@ -11,7 +11,8 @@ class Networker:
         self.server = GameServer()
         ip = urllib.request.urlopen('http://ifconfig.me/ip').read()
         ip.decode("utf-8")
-        self.server.server_start('localhost', 2134)
+        self.server.serverStart('localhost', 2134)
+        self.player_names = {}
 
     def getAccesKey(self) -> bytes:
         return self.server.host
@@ -27,7 +28,7 @@ class GameServer:
         self.server_started = False
         self.server = None
 
-    def server_start(self, host, port):
+    def serverStart(self, host, port):
         self.host = host
         self.port = port
         print(host)
@@ -36,7 +37,7 @@ class GameServer:
         self.server_thread.start()
         self.server_started = True
 
-    def server_end(self):
+    def serverEnd(self):
         self.server.shutdown()
 
 
@@ -48,10 +49,22 @@ class ServerHandler(socketserver.BaseRequestHandler):
     """
 
     def handle(self):
-        print("Received sth")
         self.data = self.request.recv(1024).strip()
-        print("{} wrote:".format(self.client_address[0]))
-        print(self.data)
+        data_string = self.data.decode("UTF-8")
+        data_split = data_string.split("§")
+        typ = 0
+        player = 0
+        message = ""
+        for segment in data_split[1:]:
+            if typ == 0:
+                player = segment
+            else:
+                message = segment
+                print("{0} send a message {1}. \n".format(player, message))
+
+            typ = 1 - typ
+
+
 
         #self.request.sendall(self.data.upper())
 
