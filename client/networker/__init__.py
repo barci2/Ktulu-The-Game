@@ -2,6 +2,7 @@
 import socket
 import random
 import settings
+import json
 
 
 class Networker:
@@ -17,17 +18,31 @@ class Networker:
 class Connection:
     """ Class serving technical side of networking"""
 
-    def __init__(self, server_adress, port, client_id, player_name):
+    def get_ip(self):
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        try:
+            # doesn't even have to be reachable
+            s.connect(('10.255.255.255', 1))
+            self.IP = s.getsockname()[0]
+        except:
+            self.IP = '127.0.0.1'
+        finally:
+            s.close()
+
+    def __init__(self, server_adress, port, client_token, player_name):
         self.port = port
         self.server_adress = server_adress
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.client_id = client_id
+        self.client_token = client_token
         self.sock.connect((self.server_adress, self.port))
-        self.send("@register@")                        # Zastrzeżenie: koniecznie zmień to na jsona. Budowanie własnego protokołu będzie się później baaaardzo syfiło, a nie kosztuje cię to jakoś dużo
-        self.send("@Name_change@" + player_name)       # Zastrzeżenie: to samo tutaj
+        self.get_ip()
+        self.player_name = player_name
+        self.send("initialization", {"IP": self.IP, "player_name": self.player_name, "client_token": client_token})
 
-    def send(self, data):
-        self.sock.sendall(bytes("§" + str(self.client_id) + "§" + str(data), "utf-8")) # Ponownie tutaj; kolejne wiadomości oddzielaj enterem raczej
+    def send(self, type_of_command, data):
+        data['type'] = type_of_command
+        data['client_token'] = self.client_token
+        self.sock.sendall(bytes(json.dumps(data) + '§', "UTF-8")) # Ponownie tutaj; kolejne wiadomości oddzielaj enterem raczej
         print("Sent:     {}".format(data))                                             # Zmień z stdio na stderr raczej
 
     def disconnect(self):
