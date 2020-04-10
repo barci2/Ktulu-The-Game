@@ -12,7 +12,16 @@ class Networker:
         self.client_id = random.randint(1, 10000000000000)
         print(self.client_id)
         self.connector = Connection("localhost", settings.port, self.client_id, "Janek")  # Zastrzeżenie: zmień z "localhost" na argument który będzie kluczem od serwera; tak samo z imieniem
+        
+    @async
+    def start(self):
+        pass
 
+    def setChatManager(self, chatManager):
+        self._chatManager = chatManager
+
+    def setGUI(self, gui):
+        self._gui = gui
 
 
 class Connection:
