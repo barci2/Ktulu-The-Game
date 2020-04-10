@@ -38,4 +38,3 @@ class GUI:
 
 		window.show()
 		app.exec_()
-

@@ -15,7 +15,6 @@ class Message(QtWidgets.QLabel):
 		text = f"[{player['name']}] {message['text']}"
 		self.setText(text)
 
-
 class MessagesBox(QtWidgets.QWidget):
 	_messages: List[MessageType]
 
@@ -85,7 +84,7 @@ class Chat(QtWidgets.QWidget):
 
 	def newMessage(self, message: MessageType):
 		self._messages_box.newMessage(message)
-		# Wait until geometry update 
+		# Wait until geometry update
 		QtCore.QTimer.singleShot(1, self.updateMessagesBox)
 
 	def updateMessagesBox(self):

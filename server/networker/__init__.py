@@ -13,6 +13,8 @@ stack_of_commands_th = threading.Thread()
 class Networker:
     """This class supports communication between Game and client"""
 
+    # Zastrzeżenie: Przenieś __init__ do start
+
     def __init__(self):
         self.local = False
         self.IP = '127.0.0.1'
