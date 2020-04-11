@@ -8,7 +8,7 @@ import ipaddress
 ##############
 class Player():
     def __init__(self,ip):
-        self._ip=(ip if type(ip)==ipaddress.Ipv4Address else ipaddress.ip_address(ip)=)
+        self._ip=(ip if type(ip)==ipaddress.Ipv4Address else ipaddress.ip_address(ip))
         self._card=None
 
     def card(self):
@@ -16,6 +16,7 @@ class Player():
 
     def setCard(self,card):
         self._card=card
+        card.reset()
 
     def ip(self):
         return self._ip

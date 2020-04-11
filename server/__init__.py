@@ -4,6 +4,7 @@
 from . import gameKernel
 from . import networker
 from . import chatManager
+from base.decorators import toThread
 
 ################
 # Initial Code #
@@ -27,7 +28,7 @@ _gameKernel.setChatManager(_chatManager)
 #############
 # Functions #
 #############
-@async
+@toThread
 def start() -> bytes:
     global _networker,_chatManager,_gameKernel
     _networker.start()
