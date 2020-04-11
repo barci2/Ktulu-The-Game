@@ -1,2 +1,10 @@
 class ChatManager:
-    pass
+    @async
+    def start(self):
+        pass
+
+    def setNetworker(self, networker):
+        self._networker = networker
+
+    def setGUI(self, gui):
+        self._gui = gui

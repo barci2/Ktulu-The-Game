@@ -2,26 +2,26 @@ from PyQt5 import QtWidgets
 import client
 
 class ChooseRoleWindow(QtWidgets.QDialog):
-	def __init__(self, *args, **kwargs):
-		super().__init__(*args, **kwargs)
-		self.choosen_role = ""
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.choosen_role = ""
 
-		layout = QtWidgets.QHBoxLayout()
+        layout = QtWidgets.QHBoxLayout()
 
-		for role in client.roles:
-			button = QtWidgets.QPushButton()
-			button.setText(role)
-			button.clicked.connect(self.setRole(role))
-			layout.addWidget(button)
+        for role in client.roles:
+            button = QtWidgets.QPushButton()
+            button.setText(role)
+            button.clicked.connect(self.setRole(role))
+            layout.addWidget(button)
 
-		self.setLayout(layout)
+        self.setLayout(layout)
 
-	def setRole(self, role):
-		def _setRole():
-			self.choosen_role = role
-			self.close()
-		return _setRole
+    def setRole(self, role):
+        def _setRole():
+            self.choosen_role = role
+            self.close()
+        return _setRole
 
-	def choose(self):
-		self.exec_()
-		return self.choosen_role
+    def choose(self):
+        self.exec_()
+        return self.choosen_role

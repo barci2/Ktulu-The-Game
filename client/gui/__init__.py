@@ -5,36 +5,35 @@ from .playersList import PlayersList
 from .actions import Actions
 from .voting import Voting
 from .chat import Chat
+from .layoutCreator import createLayout
 
-app = QtWidgets.QApplication([])
 
-class Window(QtWidgets.QWidget):
-	def __init__(self, rect: QtCore.QRect, *args, **kwargs):
-		super().__init__(*args, **kwargs)
-		self.setGeometry(rect)
+class GUI(QtWidgets.QWidget):
+    def __init__(self, rect=QtCore.QRect(60, 60, 700, 500), *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.setGeometry(rect)
 
-		window_layout = QtWidgets.QHBoxLayout()
-		window_layout.addWidget(Chat())
+        self.setLayout(createLayout(QtWidgets.QHBoxLayout, [
+            Chat(),
+            createLayout(QtWidgets.QVBoxLayout, [
+                PlayersList(), 
+                Actions(), 
+                Voting()
+                ])
+            ]))
 
-		right_panel = QtWidgets.QVBoxLayout()
+        self.update()
 
-		right_panel.addWidget(PlayersList())
-		right_panel.addWidget(Actions())
-		right_panel.addWidget(Voting())
+    def chooseRole(self):
+        dialog_window = ChooseRoleWindow()
+        return dialog_window.choose()
 
-		window_layout.addLayout(right_panel)
+    @async
+    def start(self):
+        pass
 
-		self.setLayout(window_layout)
+    def setChatManager(self, chatManager):
+        self._chatManager = chatManager
 
-		self.update()
-
-class GUI:
-	def chooseRole(self):
-		dialog_window = ChooseRoleWindow()
-		return dialog_window.choose()
-
-	def initGameWindow(self):
-		window = Window(QtCore.QRect(60, 60, 700, 500))
-
-		window.show()
-		app.exec_()
+    def setNetworker(self, networker):
+        self._networker = networker
