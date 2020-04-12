@@ -3,7 +3,6 @@ from pydantic import BaseModel
 from .layoutCreator import createLayout
 from .messagesBox import MessagesBox, MessageType
 
-
 class Chat(QtWidgets.QWidget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

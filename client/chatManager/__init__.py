@@ -1,5 +1,7 @@
+from base.decorators import toThread
+
 class ChatManager:
-    @async
+    @toThread
     def start(self):
         pass
 

@@ -1,5 +1,6 @@
+from PyQt5 import QtWidgets
 import server
-from base.decorators import async_func
+from base.decorators import toThread
 from . import gui
 from . import networker
 from . import chatManager
@@ -29,10 +30,14 @@ _gui.setChatManager(_chatManager)
 # Functions #
 #############
 
-@async_func
+@toThread
 def start():
+    app = QtWidgets.QApplication()
+    
     global _gui, _networker, _chatManager
     _networker.start()
     _chatManager.start()
     _gui.start()
+
+    app.exec_()
 

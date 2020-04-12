@@ -3,6 +3,7 @@ import socket
 import random
 import settings
 import json
+from base.decorators import toThread
 
 
 class Networker:
@@ -13,7 +14,7 @@ class Networker:
         print(self.client_id)
         self.connector = Connection("localhost", settings.port, self.client_id, "Janek")  # Zastrzeżenie: zmień z "localhost" na argument który będzie kluczem od serwera; tak samo z imieniem
         
-    @async
+    @toThread
     def start(self):
         pass
 
