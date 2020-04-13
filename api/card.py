@@ -14,13 +14,14 @@ _cards_ids=set()
 # Main Class #
 ##############
 class Card(IdObject):
-    def __init__(self,name):
+    def __init__(self,name,fraction):
         global _cards_ids
         super().__init__(_cards_ids)
-        
+
         self._name=name
-        self._fraction=fraction
         self._actionGroups=[]
+        self._fraction=fraction
+        fraction.registerCard(self)
 
     def reset(self):
         super().reset()
@@ -30,9 +31,6 @@ class Card(IdObject):
 
     def registerActionGroup(self,actionGroup):
         self._actionsGroups.append(actionGroup)
-
-    def setFraciton(self,fraction):
-        self._fraction=fraction
 
     def name(self):
         return self._name

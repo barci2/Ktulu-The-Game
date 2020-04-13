@@ -31,14 +31,15 @@ def action(name,group):
                 self._func=func
                 self._name=name
 
+            def __call__(self):
+                return self._func()
+
             def name(self):
                 return self._name
 
             def description(self):
                 return self.__doc__
 
-            def __call__(self):
-                return self._func()
         nonlocal name,group
         action=Action(func,name)
         group.registerAction(action)
