@@ -1,9 +1,10 @@
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtCore
 import server
 from base.decorators import toThread
-from . import gui
-from . import networker
-from . import chatManager
+from .gui import GUI
+from .networker import Networker
+from .chatManager import ChatManager
+from .gui.playersList import PlayersList
 
 roles = ['Player', 'Master']
 
@@ -12,9 +13,9 @@ roles = ['Player', 'Master']
 ################
 
 # Constructing main classes
-_networker = networker.Networker()
-_chatManager = chatManager.ChatManager()
-_gui = gui.GUI()
+_networker = Networker()
+_chatManager = ChatManager()
+_gui = GUI()
 
 # Sharing classes between themselves
 _networker.setChatManager(_chatManager)
@@ -32,8 +33,8 @@ _gui.setChatManager(_chatManager)
 
 @toThread
 def start():
-    app = QtWidgets.QApplication()
-    
+    app = QtWidgets.QApplication([])
+
     global _gui, _networker, _chatManager
     _networker.start()
     _chatManager.start()

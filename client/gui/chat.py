@@ -50,3 +50,6 @@ class Chat(QtWidgets.QWidget):
     def updateMessagesBox(self):
         geometry = self._messages_box.frameGeometry()
         self._scroll_area.ensureVisible(0, geometry.height(), 0, 0)
+
+    def addPlayer(self, player):
+        self._messages_box.addPlayer(player)
