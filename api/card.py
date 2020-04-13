@@ -2,38 +2,31 @@
 # Imports #
 ###########
 
-from base.decorators import *
+from base.idObject import IdObject
 
 #######################
 # Initialization Code #
 #######################
 
-_cards_ids
+_cards_ids=set()
 
 ##############
 # Main Class #
 ##############
-class Card():
+class Card(IdObject):
     def __init__(self,name):
+        global _cards_ids
+        super().__init__(_cards_ids)
+        
         self._name=name
         self._fraction=fraction
         self._actionGroups=[]
-        self._id=None
-        self.reset()
 
     def reset(self):
-        if self._id in _cards_ids:
-            _cards_ids.remove(self._id)
-        self._id=random.randint(0,2**(8*id_length)).to_bytes(id_length,"big")
-        while self._id in _cards_ids:
-            self._id=random.randint(0,2**(8*id_length)).to_bytes(id_length,"big")
-        _cards_ids.add(self._id)
+        super().reset()
         for actionGroup in self._actionGroups:
             for action in actionGroup.listActions():
                 action.reset()
-
-    def id(self):
-        return self._id
 
     def registerActionGroup(self,actionGroup):
         self._actionsGroups.append(actionGroup)
