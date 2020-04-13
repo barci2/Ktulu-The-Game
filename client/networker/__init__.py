@@ -24,6 +24,18 @@ class Networker:
     def setGUI(self, gui):
         self._gui = gui
 
+    def addPlayer(self, player):
+        self._gui.addPlayer(player)
+        self._chatManager.addPlayer(player)
+
+    # At client received message from server
+    def addMessage(self, message, chat):
+        self._chatManager.addMessage(message, chat)
+        self._gui.addMessage(message, chat)
+
+    def sendMessage(self, message: str, chat):
+        pass
+
 
 class Connection:
     """ Class serving technical side of networking"""

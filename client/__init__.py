@@ -5,6 +5,9 @@ from .gui import GUI
 from .networker import Networker
 from .chatManager import ChatManager
 from .gui.playersList import PlayersList
+from pydantic import BaseModel
+from typing import List, Optional
+
 
 roles = ['Player', 'Master']
 
@@ -41,4 +44,3 @@ def start():
     _gui.start()
 
     app.exec_()
-

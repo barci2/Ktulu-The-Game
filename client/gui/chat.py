@@ -3,18 +3,23 @@ from pydantic import BaseModel
 from .layoutCreator import createLayout
 from .messagesBox import MessagesBox, MessageType
 
+chats = ["villagers", "mafia"]
+
 class Chat(QtWidgets.QWidget):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, networker, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self._messages_box = MessagesBox()
+        self._messages_boxes = {}
+
+        for chat in chats:
+            self._messages_boxes[chat] = MessagesBox()
 
         self._scroll_area = QtWidgets.QScrollArea()
         self._scroll_area.setBackgroundRole(QtGui.QPalette.Dark)
         self._scroll_area.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
         self._scroll_area.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self._scroll_area.setWidgetResizable(True)
-        self._scroll_area.setWidget(self._messages_box)
+        self._scroll_area.setWidget(self._messages_boxes[0])
 
         self._text_box = QtWidgets.QLineEdit()
         self._text_box.returnPressed.connect(self.sendMessage)
@@ -42,14 +47,18 @@ class Chat(QtWidgets.QWidget):
 
         self._text_box.setText("")
 
-    def newMessage(self, message: MessageType):
-        self._messages_box.newMessage(message)
+    def newMessage(self, message: MessageType, chat):
+        self._messages_boxes[chat].newMessage(message)
         # Wait until geometry update
-        QtCore.QTimer.singleShot(1, self.updateMessagesBox)
+        QtCore.QTimer.singleShot(1, lambda: self.updateMessagesBox(chat))
 
-    def updateMessagesBox(self):
-        geometry = self._messages_box.frameGeometry()
+    def updateMessagesBox(self, chat):
+        geometry = self._messages_boxes[chat].frameGeometry()
         self._scroll_area.ensureVisible(0, geometry.height(), 0, 0)
 
     def addPlayer(self, player):
         self._messages_box.addPlayer(player)
+
+    def setChat(self, chat):
+        self._scroll_area.setWidget(self._messages_boxes[chat])
+

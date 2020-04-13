@@ -51,10 +51,11 @@ class GUI(QtWidgets.QMainWindow):
     def start(self):
         role = self.chooseRole()
         enter_code = GameCodeWindow()
-        enter_code.show()
-        
-        waiting_screen = WaitingScreen(self._networker, role)
-        waiting_screen.show()
+        enter_code.exec_()
+
+        self._waiting = True
+        self._waiting_screen = WaitingScreen(self._networker, role)
+        self._waiting_screen.show()
 
     def setChatManager(self, chatManager):
         self._chatManager = chatManager
@@ -65,6 +66,8 @@ class GUI(QtWidgets.QMainWindow):
     def addPlayer(self, player):
         self._players_list.addPlayer(player)
         self._chat.addPlayer(player)
+        if self._waiting:
+            self._waiting_screen.addPlayer(player)
 
-    def newMessage(self, message):
+    def addMessage(self, message):
         self._chat.newMessage(message)
