@@ -7,3 +7,4 @@
 #################
 def enableChat(name):
     print(f"Enabled chat '{name}'")
+    print()

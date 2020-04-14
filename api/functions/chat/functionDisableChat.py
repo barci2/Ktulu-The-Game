@@ -7,3 +7,4 @@
 #################
 def disableChat(name):
     print(f"Disabled chat '{name}'")
+    print()
