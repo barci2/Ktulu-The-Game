@@ -1,36 +1,44 @@
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtCore, QtGui
 from pydantic import BaseModel
 from .layoutCreator import createLayout
 
-class MessageType(BaseModel):
-    player_id: int
-    text:  str
-
 
 class MessageLabel(QtWidgets.QLabel):
-    def __init__(self, message: MessageType, player, *args, **kwargs):
+    def __init__(self, message, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        text = f"[{player['name']}] {message['text']}"
-        self.setText(text)
+        self.setText(message)
 
 
 class MessagesBox(QtWidgets.QWidget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self._players = []
-        self._messages = []
         self._layout = createLayout(QtWidgets.QVBoxLayout,
             ["Stretch"]
             )
 
         self.setLayout(self._layout)
 
-    def newMessage(self, message: MessageType):
-        self._messages.append(message)
-        self._layout.addWidget(MessageLabel(
-            message, self._players[message['player_id']])
-        )
+    def newMessage(self, message):
+        self._layout.addWidget(MessageLabel(message))
 
-    def addPlayer(self, player):
-        self._players.append(player)
+
+class MessagesScroll(QtWidgets.QScrollArea):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.setBackgroundRole(QtGui.QPalette.Dark)
+        self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
+        self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.setWidgetResizable(True)
+
+        self._messages_box = MessagesBox()
+        self.setWidget(self._messages_box)
+
+    def newMessage(self, message):
+        self._messages_box.newMessage(message)
+        # Wait until geometry update
+        QtCore.QTimer.singleShot(1, self.updateMessagesBox)
+
+    def updateMessagesBox(self):
+        geometry = self._messages_box.frameGeometry()
+        self.ensureVisible(0, geometry.height(), 0, 0)
