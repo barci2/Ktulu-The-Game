@@ -10,9 +10,9 @@ from base.idObject import IdObject
 
 _fractions_ids=set()
 
-####
-#
-####
+##############
+# Main Class #
+##############
 class Fraction(IdObject):
     def __init__(self,name):
         global _fractions_ids
@@ -21,6 +21,14 @@ class Fraction(IdObject):
         self._name=name
         self._cards=[]
 
+    # Interface Functions
+    def name(self):
+        return self._name
+
+    def listCards(self):
+        return self._cards
+
+    # Management Functions
     def reset(self):
         super().reset()
         for card in self._cards:
@@ -28,6 +36,3 @@ class Fraction(IdObject):
 
     def registerCard(self,card):
         self._cards.append(card)
-
-    def listCards(self):
-        return self._cards

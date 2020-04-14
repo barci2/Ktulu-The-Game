@@ -63,6 +63,7 @@ class GameServer:  # zastrzeżenie: nie jestem pewien czy ta klasa w ogóle jest
         print(host)
         self.server = socketserver.TCPServer((self.host, self.port), ServerHandler)
         self.server_thread = threading.Thread(target=self.server.serve_forever)
+        self.server_thread.daemon=True                                              #### WAŻNE <--- pamiętać o tym
         self.server_thread.start()
         self.server_started = True
 

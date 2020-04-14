@@ -16,14 +16,14 @@ _chatManager=chatManager.ChatManager()
 _gameKernel=gameKernel.GameKernel()
 
 # Sharing classes between themselves
-_networker.setChatManager(_chatManager)
-_networker.setGameKernel(_gameKernel)
+#_networker.setChatManager(_chatManager)
+#_networker.setGameKernel(_gameKernel)
 
-_chatManager.setGameKernel(_gameKernel)
-_chatManager.setNetworker(_networker)
+#_chatManager.setGameKernel(_gameKernel)
+#_chatManager.setNetworker(_networker)
 
-_gameKernel.setNetworker(_networker)
-_gameKernel.setChatManager(_chatManager)
+#_gameKernel.setNetworker(_networker)
+#_gameKernel.setChatManager(_chatManager)
 
 #############
 # Functions #

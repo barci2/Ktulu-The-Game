@@ -12,13 +12,18 @@ class ActionGroup():
         self._card=card
         card.registerActionGroup(self)
 
-    def registerAction(self,action):
-        if type(action)!=Action:
-            raise TypeError("action must be of type Action")
-        self._actions.append(action)
-
+    # Interface Functions
     def listActions(self):
         return self._actions
 
     def card():
         return self._card
+
+    def name():
+        return self._name
+
+    # Management Functions
+    def registerAction(self,action):
+        if type(action)!=Action:
+            raise TypeError("action must be of type Action")
+        self._actions.append(action)

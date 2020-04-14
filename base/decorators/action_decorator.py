@@ -20,7 +20,7 @@ def action(name,group):
                 global _actions_ids
                 super().__init__(_actions_ids)
 
-                if len(func.__code__.co_varnames)>0:
+                if len(func.__code__.co_varnames)>1 or func.__code__.co_varnames!=('self',):
                     raise AssertionError("Action should not take any arguments")
 
                 if func.__doc__!=None:
@@ -30,15 +30,27 @@ def action(name,group):
 
                 self._func=func
                 self._name=name
+                self._enabled=True
 
-            def __call__(self):
-                return self._func()
-
+            # Interface Functions
             def name(self):
                 return self._name
 
             def description(self):
                 return self.__doc__
+
+            def isEnabled(self):
+                return self._enabled
+
+            # Management Functions
+            def __call__(self):
+                return self._func()
+
+            def enable(self):
+                self._enabled=True
+
+            def disable(self):
+                sefl._disabled=True
 
         nonlocal name,group
         action=Action(func,name)
