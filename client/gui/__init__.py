@@ -42,6 +42,7 @@ class GUI(QtWidgets.QMainWindow):
         self._central_widget.setLayout(self._layout)
 
         self.setCentralWidget(self._central_widget)
+        self._waiting = False
 
     def chooseRole(self):
         dialog_window = ChooseRoleWindow()
@@ -57,17 +58,26 @@ class GUI(QtWidgets.QMainWindow):
         self._waiting_screen = WaitingScreen(self._networker, role)
         self._waiting_screen.show()
 
-    def setChatManager(self, chatManager):
-        self._chatManager = chatManager
+    def setChatManager(self, chat_manager):
+        self._chatManager = chat_manager
+        self._chat.setChatManager(chat_manager)
 
     def setNetworker(self, networker):
         self._networker = networker
 
     def addPlayer(self, player):
         self._players_list.addPlayer(player)
-        self._chat.addPlayer(player)
         if self._waiting:
             self._waiting_screen.addPlayer(player)
 
-    def addMessage(self, message):
-        self._chat.newMessage(message)
+    def addMessage(self, message, chat):
+        self._chat.newMessage(message, chat)
+
+    def createChat(self, chat_name):
+        self._chat.createChat(chat_name)
+
+    def setChat(self, chat):
+        self._chat.setChat(chat)
+        
+    def disableChat(self):
+        self._chat.disableChat()

@@ -1,25 +1,19 @@
-from PyQt5 import QtWidgets, QtCore, QtGui
+from PyQt5 import QtWidgets
 from pydantic import BaseModel
 from .layoutCreator import createLayout
-from .messagesBox import MessagesBox, MessageType
+from .messagesBox import MessagesScroll
 
 chats = ["villagers", "mafia"]
 
+
 class Chat(QtWidgets.QWidget):
-    def __init__(self, networker, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self._messages_boxes = {}
+        self._chats = {}
+        self._chat_name = QtWidgets.QLabel()
 
-        for chat in chats:
-            self._messages_boxes[chat] = MessagesBox()
-
-        self._scroll_area = QtWidgets.QScrollArea()
-        self._scroll_area.setBackgroundRole(QtGui.QPalette.Dark)
-        self._scroll_area.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
-        self._scroll_area.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self._scroll_area.setWidgetResizable(True)
-        self._scroll_area.setWidget(self._messages_boxes[0])
+        self._messages_scroll_areas = QtWidgets.QStackedWidget()
 
         self._text_box = QtWidgets.QLineEdit()
         self._text_box.returnPressed.connect(self.sendMessage)
@@ -30,35 +24,35 @@ class Chat(QtWidgets.QWidget):
         self._input_layout = createLayout(QtWidgets.QHBoxLayout,
             [self._text_box, self._send_button])
 
-        self._layout = createLayout(QtWidgets.QVBoxLayout, 
-            [self._scroll_area, self._input_layout])
+        self._layout = createLayout(QtWidgets.QVBoxLayout, [
+            self._chat_name,
+            self._messages_scroll_areas,
+            self._input_layout
+            ])
 
         self.setLayout(self._layout)
+
+    def setChatManager(self, chat_manager):
+        self._chat_manager = chat_manager
 
     def sendMessage(self):
         if self._text_box.text() == "":
             return
 
-        # This should be replaced by request to server
-        self.newMessage({
-            "player_id": 0,
-            "text": self._text_box.text()
-            })
-
+        self._chat_manager.sendMessage(self._text_box.text())
         self._text_box.setText("")
 
-    def newMessage(self, message: MessageType, chat):
-        self._messages_boxes[chat].newMessage(message)
-        # Wait until geometry update
-        QtCore.QTimer.singleShot(1, lambda: self.updateMessagesBox(chat))
+    def newMessage(self, message, chat_name):
+        self._chats[chat_name].newMessage(message)
 
-    def updateMessagesBox(self, chat):
-        geometry = self._messages_boxes[chat].frameGeometry()
-        self._scroll_area.ensureVisible(0, geometry.height(), 0, 0)
+    def setChat(self, chat_name):
+        self._messages_scroll_areas.setCurrentWidget(self._chats[chat_name])
+        self._chat_name.setText(f"Chat: {chat_name}")
 
-    def addPlayer(self, player):
-        self._messages_box.addPlayer(player)
+    def createChat(self, chat_name):
+        self._chats[chat_name] = MessagesScroll()
+        self._messages_scroll_areas.addWidget(self._chats[chat_name])
 
-    def setChat(self, chat):
-        self._scroll_area.setWidget(self._messages_boxes[chat])
-
+    # TODO: change "Send" button color (or sth else, to show that chat is disabled)
+    def disableChat(self):
+        pass
