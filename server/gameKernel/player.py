@@ -9,7 +9,7 @@ import ipaddress
 ##############
 class Player():
     def __init__(self,ip):
-        self._ip=(ip if type(ip)==ipaddress.Ipv4Address else ipaddress.ip_address(ip))
+        self._ip=(ip if type(ip)==ipaddress.IPv4Address else ipaddress.ip_address(ip))
         self._card=None
 
     def card(self):

@@ -6,6 +6,9 @@ import gameCode
 ##############
 # Main Class #
 ##############
+from server.gameKernel.player import Player
+import ipaddress
+
 
 class GameKernel():
     def __init__(self):
@@ -17,7 +20,7 @@ class GameKernel():
         self._players[player.ip()]=player
 
     def getPlayer(self,ip):
-        ip=(ip if type(ip)==ipaddress.Ipv4Address else ipaddress.ip_address(ip))
+        ip=(ip if type(ip)==ipaddress.IPv4Address else ipaddress.ip_address(ip))
         return self._players[ip]
 
     def listPlayers(self):
