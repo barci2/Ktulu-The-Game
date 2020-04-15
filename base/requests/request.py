@@ -5,6 +5,11 @@ import pickle
 import random
 from settings import id_length
 
+#######################
+# Initialization Code #
+#######################
+_requests_ids=set() # Not utilized on server
+
 ##############
 # Main Class #
 ##############
@@ -31,12 +36,24 @@ class Request():
         else:
             raise AssertionError("__init__ arguments invalid")
 
+    def __del__(self):
+        global _requests_ids
+        if self._id in _requests_ids and self._original:
+            _requests_ids.remove(self._id)
+
     def _initNew(self):
+        global _requests_ids
         self._id=random.randint(0,2**(id_length*8)).to_bytes(id_length,"big")
+        while self._id in _requests_ids:
+            self._id=random.randint(0,2**(id_length*8)).to_bytes(id_length,"big")
+        _requests_ids.add(self._id)
+
+        self._original=True
 
     def _initResponse(self,response):
         self._id=response.id()
         self._player=response.player()
+        self._original=False
 
     def _load(self,message,player):
         try:
@@ -52,6 +69,7 @@ class Request():
         self.__class__=obj.__class__
         self.__dict__.update(obj.__dict__)
         self._player=player
+        self._original=False
 
     # Class interface functions
 
