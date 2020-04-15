@@ -11,5 +11,6 @@ def toThread(func):
     @wraps(func)
     def asyncWrapper(*args,**kwargs):
         t=Thread(target=func,args=args,kwargs=kwargs)
+        t.daemon=True
         t.start()
     return asyncWrapper

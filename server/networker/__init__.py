@@ -66,6 +66,7 @@ class Networker:
         self.host = host
         self.server = socketserver.TCPServer((self.host, settings.port), server_handler.ServerHandler)
         self.server_thread = threading.Thread(target=self.server.serve_forever)
+        self.server_thread.daemon=True                                              #### WAŻNE <--- pamiętać o tym
         self.server_thread.start()
         self.server_started = True
 
