@@ -1,5 +1,4 @@
 from PyQt5 import QtWidgets
-from pydantic import BaseModel
 from .layoutCreator import createLayout
 from .messagesBox import MessagesScroll
 
