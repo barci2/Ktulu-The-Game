@@ -64,8 +64,6 @@ class Networker:
         return self.responses[request.id()]
 
     def returnResponse(self, response):
-        print("Returning response")
-        print(self.awaitResponses)
         self.awaitResponses[response.id()].set()
         self.responses[response.id()] = response
 

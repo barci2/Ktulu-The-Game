@@ -16,11 +16,10 @@ class ServerHandler(socketserver.BaseRequestHandler):
     """
 
     def handle(self):
-        self.networker = client.networker.Networker
         self.data = self.request.recv(1024).strip()
         request_object = pickle.loads(self.data)
         print("Client received: " + str(request_object))
-        self.networker.returnResponse(self.networker, response=request_object)
+        self.networker.returnResponse(response=request_object)
 
     def setNetworker(self, networker):
         self.networker = networker
