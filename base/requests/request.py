@@ -82,4 +82,7 @@ class Request():
     def send(self):
         if not issubclass(type(request),Request):
             raise TypeError("request does not inherit Request type")
-        self._networker.send(self)
+        networker=self._networker
+        self._networker=None
+        networker.send(pickle.dumps(self))
+        self._networker=networker
