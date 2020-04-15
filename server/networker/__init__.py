@@ -5,29 +5,43 @@ import socket
 import threading
 import json
 import urllib.request
+from . import server_handler
+from .. import gameKernel
+from base.decorators import toThread
 
-stack_of_commands = []
-stack_of_commands_th = threading.Thread()
-
+#######################
+### Networker class ###
+#######################
 
 class Networker:
     """This class supports communication between Game and client"""
 
-    # Zastrzeżenie: Przenieś __init__ do start
-
     def __init__(self):
-        self.local = False
-        self.IP = '127.0.0.1'
-        self.server = GameServer()
-        self.get_ip()
-        self.server.serverStart('localhost', settings.port)
-        self.players = []
-        ServerHandler.command_handler = self
+        pass
 
+    # Function which is run when program is initialized
+    @toThread
+    def start(self):
+        self.local = False
+        self.get_ip()
+        self.serverStart('localhost', settings.port)
+        self.players = []
+        self.host = ''
+        self.server_thread = None
+        self.server_started = False
+        self.client_connection_sock = []
+        server_handler.ServerHandler.command_handler = self
+
+    def setChatManager(self, chat_manager):
+        self.chat_manager = chat_manager
+
+    def setGameKernel(self, game_kernel):
+        self.game_kernel = game_kernel
+
+    # Gets ip of host
     def get_ip(self):
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         try:
-            # doesn't even have to be reachable
             s.connect(('10.255.255.255', 1))
             self.IP = s.getsockname()[0]
         except:
@@ -44,50 +58,30 @@ class Networker:
         print("Player added. Name: {0}. IP: {1}. Token: {2}.".format(command['IP'], command['player_name'], command['client_token']))
 
     def getAccesKey(self) -> bytes:
-        return self.server.host  # zastrzeżenie: dodaj parametr local=False i zwracaj defaultowo to co ma być zwrócone dla klientów spoza sieci
+        return self.host  # zastrzeżenie: dodaj parametr local=False i zwracaj defaultowo to co ma być zwrócone dla klientów spoza sieci
+        #Nie rozumiem o co ci chodzi
 
-
-class GameServer:  # zastrzeżenie: nie jestem pewien czy ta klasa w ogóle jest potrzebna, czy nie można tego wszystkiego zrobić w Networkerze, no ale jaki jest twój zamysł to nwm więc tylko sugeruję tutaj
-    """ Server class, server connection to clients """
-
-    def __init__(self):
-        self.host = ''
-        self.port = 0
-        self.server_thread = None
-        self.server_started = False
-        self.server = None
-
+    # command starting server
     def serverStart(self, host, port):
         self.host = host
-        self.port = port
-        print(host)
-        self.server = socketserver.TCPServer((self.host, self.port), ServerHandler)
+        self.server = socketserver.TCPServer((self.host, settings.port), server_handler.ServerHandler)
         self.server_thread = threading.Thread(target=self.server.serve_forever)
         self.server_thread.start()
         self.server_started = True
 
+    def startClientConnection(self, client_ip):
+        self.client_connection_sock[client_ip] = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.client_connection_sock[client_ip].connect((client_ip, settings.port + 1))
+        pass
+
+    def sendToClient(self, message, player):
+        message = message.encode()
+        self.client_connection_sock[player.ip()].sendall(message)
+        pass
+
+    # command shuting server down
     def serverEnd(self):
         self.server.shutdown()
-
-
-class ServerHandler(socketserver.BaseRequestHandler):
-    """
-
-    It's handler for server.
-
-    """
-
-    def handle(self):
-        self.data = self.request.recv(1024).strip()
-        data_string = self.data.decode("UTF-8")
-        data_split = data_string.split("§")
-        del data_split[-1]
-        for command in data_split:
-            #tutaj trzeba będzie wywołać funkcję uruchamiającą komendy z Networkera
-            self.command_handler.command(json.loads(command))
-
-
-
 
 
 class NetworkPlayer:
