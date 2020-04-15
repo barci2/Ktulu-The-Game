@@ -3,12 +3,11 @@ import settings
 import socketserver
 import socket
 import threading
-import json
-import urllib.request
 from . import server_handler
 from .. import gameKernel
 from base.decorators import toThread
 import ipaddress
+import base.requests
 
 #######################
 ### Networker class ###

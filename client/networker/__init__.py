@@ -9,6 +9,7 @@ from base.decorators import toThread
 from . import server_handler
 import ipaddress
 import pickle
+import base.requests
 
 ##################
 ### Main class ###
@@ -49,9 +50,10 @@ class Networker:
         print("OK")
 
     def sendToServer(self, request):
-        #request_to_text = pickle.dumps(request)
-        request = request.encode()
-        self.sock.sendall(request)
+        if not issubclass(type(request), base.requests.Request):
+            return
+        request_to_text = pickle.dumps(request)
+        self.sock.sendall(request_to_text)
 
 
     def setGUI(self, gui):

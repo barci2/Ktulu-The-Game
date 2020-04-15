@@ -1,6 +1,7 @@
 import client
 import server
 import ipaddress
+import base.requests
 
 def test1():
     ############################################################
@@ -19,7 +20,6 @@ def test1():
     ##############################################################
 
     client_networker.startServerConnection()
-    server_networker.startClientConnection('127.0.0.1')
     print("Established connection between server and client. Server is able to answear.")
 
     #######################################################
@@ -27,7 +27,10 @@ def test1():
     #######################################################
     game_kernel = server.gameKernel.GameKernel()
     game_kernel.registerPlayer(ipaddress.ip_address('127.0.0.1'))
-    client_networker.sendToServer("Client is able to send information to server.")
+    test_request_client = base.requests.Request(client_networker)
+    client_networker.sendToServer(test_request_client)
+
+
     server_networker.startClientConnection(ipaddress.ip_address('127.0.0.1'))
     server_networker.sendToClient("Server is able to send information to client.", game_kernel.getPlayer('127.0.0.1'))
 

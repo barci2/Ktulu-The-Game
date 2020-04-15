@@ -1,4 +1,5 @@
 import socketserver
+import pickle
 
 ########################################
 ### Handler used by server.Networker ###
@@ -13,6 +14,5 @@ class ServerHandler(socketserver.BaseRequestHandler):
 
     def handle(self):
         self.data = self.request.recv(1024).strip()
-        data_string = self.data.decode("UTF-8")
-        data_split = data_string.split("\n")
-        print(data_split[0])
+        request_object = pickle.loads(self.data)
+        print(request_object)
