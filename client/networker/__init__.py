@@ -1,25 +1,51 @@
 # Client side Networker
 import socket
 import random
+import socketserver
 import settings
 import json
+import threading
 from base.decorators import toThread
+from . import  server_handler
 
+##################
+### Main class ###
+##################
 
 class Networker:
     """ Class responsible for serving networking. """
 
-    def __init__(self): # Zastrzeżeie: zmień __init__ na start i dodaj funkcje setGUI i setChatManager
-        self.client_id = random.randint(1, 10000000000000)
-        print(self.client_id)
-        self.connector = Connection("localhost", settings.port, self.client_id, "Janek")  # Zastrzeżenie: zmień z "localhost" na argument który będzie kluczem od serwera; tak samo z imieniem
-        
+    # Gets IP of the client
+    def get_ip(self):
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        try:
+            # doesn't even have to be reachable
+            s.connect(('10.255.255.255', 1))
+            self.IP = s.getsockname()[0]
+        except:
+            self.IP = '127.0.0.1'
+        finally:
+            s.close()
+
     @toThread
     def start(self):
-        pass
+        self.client_id = random.randint(1, 10000000000000)
+        self.server_adress = 'localhost'
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.sock.connect((self.server_adress, settings.port))
+        self.IP = self.get_ip()
 
     def setChatManager(self, chatManager):
         self._chatManager = chatManager
+
+    # Starts server run at client side which is used to get answers from server
+    def startFromServerConnection(self):
+        self.answer_receiver = socketserver.TCPServer((self.server_adress, settings.port + 1), server_handler.ServerHandler)
+        self.from_server_connection_thread = threading.Thread(target=self.answer_receiver.serve_forever)
+        pass
+
+    def sendToServer(self, request):
+        pass
 
     def setGUI(self, gui):
         self._gui = gui
@@ -36,36 +62,6 @@ class Networker:
     def sendMessage(self, message: str, chat):
         pass
 
-
-class Connection:
-    """ Class serving technical side of networking"""
-
-    def get_ip(self):
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        try:
-            # doesn't even have to be reachable
-            s.connect(('10.255.255.255', 1))
-            self.IP = s.getsockname()[0]
-        except:
-            self.IP = '127.0.0.1'
-        finally:
-            s.close()
-
-    def __init__(self, server_adress, port, client_token, player_name):
-        self.port = port
-        self.server_adress = server_adress
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.client_token = client_token
-        self.sock.connect((self.server_adress, self.port))
-        self.get_ip()
-        self.player_name = player_name
-        self.send("initialization", {"IP": self.IP, "player_name": self.player_name, "client_token": client_token})
-
-    def send(self, type_of_command, data):
-        data['type'] = type_of_command
-        data['client_token'] = self.client_token
-        self.sock.sendall(bytes(json.dumps(data) + '§', "UTF-8")) # Ponownie tutaj; kolejne wiadomości oddzielaj enterem raczej
-        print("Sent:     {}".format(data))                                             # Zmień z stdio na stderr raczej
-
     def disconnect(self):
         self.sock.close()
+        self.answer_receiver.shutdown()
