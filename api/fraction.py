@@ -28,6 +28,9 @@ class Fraction(IdObject):
     def listCards(self):
         return self._cards
 
+    def countCards(self):
+        return len(self._cards)
+
     # Management Functions
     def reset(self):
         super().reset()
@@ -36,3 +39,7 @@ class Fraction(IdObject):
 
     def registerCard(self,card):
         self._cards.append(card)
+
+    def win(self):
+        print(f"Fraction named {self.name} has just won.")
+        print()

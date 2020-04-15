@@ -9,5 +9,10 @@ import api
 class TownspeopleFraction(api.Fraction):
     def __init__(self):
         super().__init__("Townspeople")
+        api.events.death.connect(self.deathEvent)
+
+    def deathEvent(self):
+        if api.getPlayerCount()==self.countPlayers():
+            self.win()
 
 townspeople_fraction=TownspeopleFraction()
