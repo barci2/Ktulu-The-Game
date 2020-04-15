@@ -1,4 +1,6 @@
 import socketserver
+import client.networker
+import pickle
 
 
 ###################################################################
@@ -14,7 +16,11 @@ class ServerHandler(socketserver.BaseRequestHandler):
     """
 
     def handle(self):
+        self.networker = client.networker.Networker
         self.data = self.request.recv(1024).strip()
-        data_string = self.data.decode("UTF-8")
-        data_split = data_string.split("\n")
-        print(data_split[0])
+        request_object = pickle.loads(self.data)
+        print("Client received: " + str(request_object))
+        self.networker.returnResponse(self.networker, response=request_object)
+
+    def setNetworker(self, networker):
+        self.networker = networker

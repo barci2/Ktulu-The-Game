@@ -36,6 +36,8 @@ class Networker:
         self.server_adress = '127.0.0.1'
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.IP = self.get_ip()
+        self.awaitResponses = {}
+        self.responses = {}
 
     def setChatManager(self, chatManager):
         self._chatManager = chatManager
@@ -47,14 +49,25 @@ class Networker:
         self.from_server_connection_thread.daemon = True
         self.from_server_connection_thread.start()
         self.sock.connect((self.server_adress, settings.port))
-        print("OK")
 
-    def sendToServer(self, request):
-        if not issubclass(type(request), base.requests.Request):
-            return
-        request_to_text = pickle.dumps(request)
-        self.sock.sendall(request_to_text)
+    def send(self, request, *kwords, **args):
+        self.sock.sendall(request)
 
+    # ma zwrócić odpowiedź do danego requesta
+    @toThread
+    def awaitResponse(self, request):
+        if self.responses.get(request.id()) is not None:
+            return self.responses[request.id()]
+        self.awaitResponses[request.id()] = threading.Event()
+        self.awaitResponses[request.id()].wait()
+        print(self.responses[request.id()])
+        return self.responses[request.id()]
+
+    def returnResponse(self, response):
+        print("Returning response")
+        print(self.awaitResponses)
+        self.awaitResponses[response.id()].set()
+        self.responses[response.id()] = response
 
     def setGUI(self, gui):
         self._gui = gui

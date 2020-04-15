@@ -14,5 +14,7 @@ class ServerHandler(socketserver.BaseRequestHandler):
 
     def handle(self):
         self.data = self.request.recv(1024).strip()
+        if self.data == b'':
+            return
         request_object = pickle.loads(self.data)
-        print(request_object)
+        print("Server received: " + str(request_object))

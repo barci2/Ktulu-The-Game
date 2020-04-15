@@ -48,14 +48,6 @@ class Networker:
         finally:
             s.close()
 
-    def command(self, command):
-        if command['type'] == 'initialization':
-            self.player_initialize(command)
-
-    def player_initialize(self, command):
-        self.players.append(NetworkPlayer(command['IP'], command['player_name'], command['client_token']))
-        print("Player added. Name: {0}. IP: {1}. Token: {2}.".format(command['IP'], command['player_name'], command['client_token']))
-
     def getAccesKey(self) -> bytes:
         return self.host  # zastrzeżenie: dodaj parametr local=False i zwracaj defaultowo to co ma być zwrócone dla klientów spoza sieci
         #Nie rozumiem o co ci chodzi
@@ -73,9 +65,9 @@ class Networker:
         self.client_connection_sock[client_ip] = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.client_connection_sock[client_ip].connect((client_ip, settings.port + 1))
 
-    def sendToClient(self, message, player):
-        message = message.encode()
+    def send(self, message, player):
         self.client_connection_sock[str(player.ip())].sendall(message)
+
 
     # command shuting server down
     def serverEnd(self):
