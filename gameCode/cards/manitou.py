@@ -17,7 +17,12 @@ class Manitou(api.Card):
     def makeDay(self):
         api.disableChat("Bandits")
         api.enableChat("General")
+        self.makeNight.enable()
+        self.makeDay.disable()
 
     @action("Switch to night","Management Actions")
     def makeNight(self):
         api.disableChat("Bandits")
+        api.enableChat("General")
+        self.makeNight.disable()
+        self.makeDay.enable()
