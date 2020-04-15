@@ -23,11 +23,11 @@ class Request():
         self._networker=networker
 
         if len(args)+len(kwargs)==2:
-            self.load(*args,**kwargs)
+            self._load(*args,**kwargs)
         elif len(args)==1 and len(kwargs)==0:
-            self._init_response(args[0])
+            self._initResponse(args[0])
         elif len(args)==0 and len(kwargs)==1:
-            self._init_response(list(kwargs.values())[0])
+            self._initResponse(list(kwargs.values())[0])
         elif len(args)+len(kwargs)==0:
             self._init_new(networker)
         else:
@@ -36,11 +36,11 @@ class Request():
     def _init_new(self):
         self._id=random.randint(0,2**(id_length*8)).to_bytes(id_length,"big")
 
-    def init_response(self,response):
+    def _initResponse(self,response):
         self._id=response.id()
         self._player=response.player()
 
-    def load(self,networker,message,player):
+    def _load(self,networker,message,player):
         try:
             obj=pickle.loads(message)
         except:
