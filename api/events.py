@@ -8,7 +8,7 @@
 class Event():
     def __init__(self):
         self._entries=[]
-    def addEntry(self,entry):
+    def connect(self,entry):
         if not callable(entry):
             raise TypeError("Entry not callable")
         self._entries.append(entry)
@@ -16,3 +16,8 @@ class Event():
     def __call__(self):
         for entry in self._entries:
             entry()
+
+################
+# Basic Events #
+################
+death=Event()
