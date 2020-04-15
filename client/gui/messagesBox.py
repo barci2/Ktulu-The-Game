@@ -1,5 +1,4 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
-from pydantic import BaseModel
 from .layoutCreator import createLayout
 
 

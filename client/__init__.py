@@ -5,8 +5,6 @@ from .gui import GUI
 from .networker import Networker
 from .chatManager import ChatManager
 from .gui.playersList import PlayersList
-from pydantic import BaseModel
-from typing import List, Optional
 
 
 roles = ['Player', 'Master']
@@ -14,8 +12,8 @@ roles = ['Player', 'Master']
 ################
 # Initial Code #
 ################
-
 # Constructing main classes
+app = QtWidgets.QApplication([])
 _networker = Networker()
 _chatManager = ChatManager()
 _gui = GUI()
@@ -33,14 +31,9 @@ _gui.setChatManager(_chatManager)
 #############
 # Functions #
 #############
-
-@toThread
 def start():
-    app = QtWidgets.QApplication([])
-
-    global _gui, _networker, _chatManager
+    global _gui, _networker, _chatManager,app
     _networker.start()
     _chatManager.start()
     _gui.start()
-
     app.exec_()
