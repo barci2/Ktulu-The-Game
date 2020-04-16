@@ -1,15 +1,18 @@
-# Client side Networker
+#############################
+### Client side Networker ###
+#############################
+
+#importing network modules
 import socket
 import random
 import socketserver
-import settings
-import json
 import threading
+import ipaddress
+
+#importing application modules
+import settings
 from base.decorators import toThread
 from . import server_handler
-import ipaddress
-import pickle
-import base.requests
 
 ##################
 ### Main class ###
@@ -18,7 +21,9 @@ import base.requests
 class Networker:
     """ Class responsible for serving networking. """
 
-    # Gets IP of the client
+    #############################
+    ### Gets IP of the client ###
+    #############################
     def get_ip(self):
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         try:
@@ -26,38 +31,81 @@ class Networker:
             s.connect(('10.255.255.255', 1))
             self.IP = ipaddress.ip_address(s.getsockname()[0])
         except:
+            print("Ip getting failed.")
             self.IP = ipaddress.ip_address('127.0.0.1')
         finally:
             s.close()
 
+    ##########################################
+    ### Sets basic parameters of the class ###
+    ##########################################
+
     @toThread
     def start(self):
         self.client_id = random.randint(1, 10000000000000)
-        self.server_adress = '127.0.0.1'
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.IP = self.get_ip()
+        self.awaitResponses = {}
+        self.responses = {}
+
+    #####################################
+    ### Setters of other game classes ###
+    #####################################
+
+    def setGUI(self, gui):
+        self._gui = gui
 
     def setChatManager(self, chatManager):
         self._chatManager = chatManager
 
-    # Starts server run at client side which is used to get answers from server
-    def startServerConnection(self):
-        self.answer_receiver = socketserver.TCPServer((self.server_adress, settings.port + 1), server_handler.ServerHandler)
+    ##################################################################################
+    #### Starts server run at client side which is used to get answers from server ###
+    ##################################################################################
+
+    def connectToServer(self, adress):
+        try:
+            self.server_adress = ipaddress.ip_address(adress)
+        except:
+            return "Wrong code"
+        self.answer_receiver = socketserver.TCPServer((str(self.server_adress), settings.port + 1), server_handler.ServerHandler)
         self.from_server_connection_thread = threading.Thread(target=self.answer_receiver.serve_forever)
         self.from_server_connection_thread.daemon = True
         self.from_server_connection_thread.start()
-        self.sock.connect((self.server_adress, settings.port))
-        print("OK")
+        try:
+            self.sock.connect((str(self.server_adress), settings.port))
+        except:
+            return "Unable to connect"
 
-    def sendToServer(self, request):
-        if not issubclass(type(request), base.requests.Request):
-            return
-        request_to_text = pickle.dumps(request)
-        self.sock.sendall(request_to_text)
+    ####################################################
+    ### Sends request with a separator to the server ###
+    ####################################################
 
+    def send(self, request, *kwords, **args):
+        self.sock.sendall(request + b'#SEPARATOR#')
 
-    def setGUI(self, gui):
-        self._gui = gui
+    #############################################
+    ### Returns a response to a given request ###
+    #############################################
+
+    def awaitResponse(self, request):
+        if self.responses.get(request.id()) is not None:
+            return self.responses[request.id()]
+        self.awaitResponses[request.id()] = threading.Event()
+        self.awaitResponses[request.id()].wait()
+        print("Response get")
+        return self.responses[request.id()]
+
+    #######################################################################
+    ### Function used by server side server handler to serve a response ###
+    #######################################################################
+
+    def returnResponse(self, response):
+        self.awaitResponses[response.id()].set()
+        self.responses[response.id()] = response
+
+    ###################
+    ### Adds player ###
+    ###################
 
     def addPlayer(self, player):
         self._gui.addPlayer(player)
@@ -70,6 +118,10 @@ class Networker:
 
     def sendMessage(self, message: str, chat):
         pass
+
+    #####################################
+    ### Shuts server and socket down  ###
+    #####################################
 
     def disconnect(self):
         self.answer_receiver.server_close()

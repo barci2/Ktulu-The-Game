@@ -62,7 +62,7 @@ class Request():
             print("Request from {} invalid".format(player.ip()))
             return
 
-        if not issubclass(type(obj),Request):
+        if not issubclass(type(obj), Request):
             print("Request from {} invalid".format(player.ip()))
             return
 
@@ -80,9 +80,9 @@ class Request():
         return self._player
 
     def send(self):
-        if not issubclass(type(request),Request):
+        if not issubclass(type(self), Request):
             raise TypeError("request does not inherit Request type")
-        networker=self._networker
-        self._networker=None
-        networker.send(pickle.dumps(self))
-        self._networker=networker
+        networker = self._networker
+        self._networker = None
+        networker.send(pickle.dumps(self), player=self.player())
+        self._networker = networker

@@ -6,13 +6,16 @@ import pickle
 ########################################
 
 class ServerHandler(socketserver.BaseRequestHandler):
-    """
+    """  It's handler for server.    """
 
-    It's handler for server.
-
-    """
+    ################################################################
+    ### Main function of a handler, which serves all connections ###
+    ################################################################
 
     def handle(self):
-        self.data = self.request.recv(1024).strip()
-        request_object = pickle.loads(self.data)
-        print(request_object)
+        while 1:
+            self.data = self.request.recv(1024).strip()
+            if self.data == b'':
+                return
+            request_object = pickle.loads(self.data)
+            print("Server received: " + str(request_object))

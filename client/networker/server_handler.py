@@ -1,4 +1,6 @@
 import socketserver
+import client.networker
+import pickle
 
 
 ###################################################################
@@ -14,7 +16,22 @@ class ServerHandler(socketserver.BaseRequestHandler):
     """
 
     def handle(self):
-        self.data = self.request.recv(1024).strip()
-        data_string = self.data.decode("UTF-8")
-        data_split = data_string.split("\n")
-        print(data_split[0])
+        while 1:
+            self.data = self.request.recv(1024).strip()
+            if self.data == b'':
+                return
+            data_after_split = self.data.split(b'#SEPARATOR#')
+            if len(data_after_split) > 1:
+                del data_after_split[-1]
+                for object in data_after_split:
+                    request_object = pickle.loads(object)
+                    print("Client received: " + str(request_object))
+                    self.networker.returnResponse(response=request_object)
+
+    ############################################################################################
+    ### This function should be used at the initialization of a program to set the Networker ###
+    ### It gives to handler the possibility to respond to the requests                       ###
+    ############################################################################################
+
+    def setNetworker(self, networker):
+        self.networker = networker
