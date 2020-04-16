@@ -4,6 +4,7 @@
 
 from base.idObject import IdObject
 from base.decorators.action_decorator import Action
+from base.comparable import Comparable
 
 #######################
 # Initialization Code #
@@ -14,11 +15,12 @@ _cards_ids=set()
 ##############
 # Main Class #
 ##############
-class Card(IdObject):
-    def __init__(self,name,fraction=None):
+class Card(IdObject,Comparable):
+    def __init__(self,name,fraction):
         # Initializing IdObject
         global _cards_ids
-        super().__init__(_cards_ids)
+        IdObject.__init__(self,_cards_ids)
+        Comparable.__init__(self)
 
         #Initializing internal variables
         self._name=name
@@ -47,9 +49,8 @@ class Card(IdObject):
     # Management Functions
     def reset(self):
         super().reset()
-        for actionGroup in self._actionGroups:
-            for action in actionGroup.listActions():
-                action.reset()
+        for action in sum(self._actions_dict.values(),[]):
+            action.reset()
 
     def registerActionGroup(self,actionGroup):
         self._actionsGroups.append(actionGroup)
