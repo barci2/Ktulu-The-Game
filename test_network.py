@@ -2,6 +2,13 @@ import client
 import server
 import ipaddress
 import base.requests
+from base.decorators import toThread
+import time
+
+@toThread
+def test1_response(client_networker, test_request_client):
+    odp = client_networker.awaitResponse(test_request_client)
+    print("response: " + str(odp))
 
 def test1():
     ############################################################
@@ -15,13 +22,12 @@ def test1():
     server_networker.host = 'localhost'
     server_networker.serverStart()
     print("Server has started")
-    print(client_networker.awaitResponses)
 
     ##############################################################
     ### Estabilishing connection from the server to the client ###
     ##############################################################
 
-    client_networker.startServerConnection()
+    client_networker.connectToServer('127.0.0.1')
     server_networker.startClientConnection(ipaddress.ip_address('127.0.0.1'))
     print("Established connection between server and client. Server is able to answear.")
 
@@ -33,17 +39,18 @@ def test1():
     test_request_client = base.requests.Request(client_networker)
     test_request_client._player = game_kernel.getPlayer('127.0.0.1')
     test_request_client._id = 1
+    test_request_client2 = base.requests.Request(client_networker)
+    test_request_client2._player = game_kernel.getPlayer('127.0.0.1')
     test_request_client.send()
-    print(client_networker.awaitResponse(test_request_client))
-    test_request_server = base.requests.Request(server_networker)
+    test_request_client2.send()
 
+    test_request_server = base.requests.Request(server_networker)
+    test1_response(client_networker, test_request_client)
     test_request_server._id = 1
     test_request_server._player = game_kernel.getPlayer(ipaddress.ip_address('127.0.0.1'))
     test_request_server.send()
 
-
-    #server_networker.startClientConnection(ipaddress.ip_address('127.0.0.1'))
-    #server_networker.sendToClient("Server is able to send information to client.", game_kernel.getPlayer('127.0.0.1'))
+    time.sleep(1)
 
     client_networker.disconnect()
     server_networker.serverEnd()

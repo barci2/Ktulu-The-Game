@@ -66,7 +66,7 @@ class Networker:
         self.client_connection_sock[client_ip].connect((client_ip, settings.port + 1))
 
     def send(self, message, player):
-        self.client_connection_sock[str(player.ip())].sendall(message)
+        self.client_connection_sock[str(player.ip())].sendall(message + b'#SEPARATOR#')
 
 
     # command shuting server down

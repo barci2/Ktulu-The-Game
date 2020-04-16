@@ -33,7 +33,6 @@ class Networker:
     @toThread
     def start(self):
         self.client_id = random.randint(1, 10000000000000)
-        self.server_adress = '127.0.0.1'
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.IP = self.get_ip()
         self.awaitResponses = {}
@@ -43,24 +42,30 @@ class Networker:
         self._chatManager = chatManager
 
     # Starts server run at client side which is used to get answers from server
-    def startServerConnection(self):
-        self.answer_receiver = socketserver.TCPServer((self.server_adress, settings.port + 1), server_handler.ServerHandler)
+    def connectToServer(self, adress):
+        try:
+            self.server_adress = ipaddress.ip_address(adress)
+        except:
+            return "Wrong code"
+        self.answer_receiver = socketserver.TCPServer((str(self.server_adress), settings.port + 1), server_handler.ServerHandler)
         self.from_server_connection_thread = threading.Thread(target=self.answer_receiver.serve_forever)
         self.from_server_connection_thread.daemon = True
         self.from_server_connection_thread.start()
-        self.sock.connect((self.server_adress, settings.port))
+        try:
+            self.sock.connect((str(self.server_adress), settings.port))
+        except:
+            return "Unable to connect"
 
     def send(self, request, *kwords, **args):
-        self.sock.sendall(request)
+        self.sock.sendall(request + b'#SEPARATOR#')
 
     # ma zwrócić odpowiedź do danego requesta
-    @toThread
     def awaitResponse(self, request):
         if self.responses.get(request.id()) is not None:
             return self.responses[request.id()]
         self.awaitResponses[request.id()] = threading.Event()
         self.awaitResponses[request.id()].wait()
-        print(self.responses[request.id()])
+        print("Response get")
         return self.responses[request.id()]
 
     def returnResponse(self, response):
