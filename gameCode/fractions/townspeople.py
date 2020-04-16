@@ -12,7 +12,7 @@ class TownspeopleFraction(api.Fraction):
         api.events.death.connect(self.deathEvent)
 
     def deathEvent(self):
-        if api.getPlayerCount()==self.countPlayers():
+        if api.getPlayerCount()==self.countCards():
             self.win()
 
 townspeople_fraction=TownspeopleFraction()
