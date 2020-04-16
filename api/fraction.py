@@ -19,14 +19,14 @@ class Fraction(IdObject):
         super().__init__(_fractions_ids)
 
         self._name=name
-        self._cards=[]
+        self._cards=set()
 
     # Interface Functions
     def name(self):
         return self._name
 
     def listCards(self):
-        return self._cards
+        return list(self._cards)
 
     def countCards(self):
         return len(self._cards)
@@ -38,8 +38,12 @@ class Fraction(IdObject):
             card.reset()
 
     def registerCard(self,card):
-        self._cards.append(card)
+        self._cards.add(card)
+
+    def removeCard(self,card):
+        if card in self._cards:
+            self._cards.remove(card)
 
     def win(self):
-        print(f"Fraction named {self.name} has just won.")
+        print(f"Fraction named {self._name} has just won.")
         print()

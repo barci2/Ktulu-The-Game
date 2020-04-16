@@ -1,16 +1,24 @@
 ###########
 # Imports #
 ###########
-
 import ipaddress
+import api.events
 
 ##############
 # Main Class #
 ##############
 class Player():
-    def __init__(self,ip):
+    def __init__(self,ip,networker,game_kernel):
         self._ip=(ip if type(ip)==ipaddress.IPv4Address else ipaddress.ip_address(ip))
         self._card=None
+        self._networker=networker
+        self._game_kernel=game_kernel
+
+    def kill(self):
+        #self._networker.disconnect(self)
+        self._game_kernel.removePlayer(self)
+        self._card.fraction().removeCard(self._card)
+        api.events.death()
 
     def card(self):
         return self._card

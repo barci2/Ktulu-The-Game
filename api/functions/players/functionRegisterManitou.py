@@ -1,10 +1,10 @@
 ###########
 # Imports #
 ###########
+import server
 
 #################
 # Main Function #
 #################
 def registerManitou(card):
-    print("Registered manitou with a card named '{}' in a fraction named '{}'".format(card.name(),card.fraction().name()))
-    print()
+    server.getGameKernel().getManitou().setCard(card)

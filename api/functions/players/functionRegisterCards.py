@@ -1,12 +1,18 @@
 ###########
 # Imports #
 ###########
+import server
+import random
 
 #################
 # Main Function #
 #################
 def registerCards(cards):
-    print("Registered players with following cards")
-    for card in cards:
-        print("Card '{}' in fraction '{}'".format(card.name(),card.fraction().name()))
-    print()
+        cards=cards.copy()
+        players=server.getGameKernel().listPlayers()
+        if len(cards)!=len(players):
+            raise AssertionError("Numbers of cards and players don't match")
+
+        random.shuffle(cards)
+        for player,card in zip(players,cards):
+            player.setCard(card)

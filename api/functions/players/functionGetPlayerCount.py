@@ -1,9 +1,10 @@
 ###########
 # Imports #
 ###########
+import server
 
 #################
 # Main Function #
 #################
 def getPlayerCount():
-    return 10
+    return server.getGameKernel().countPlayers()
