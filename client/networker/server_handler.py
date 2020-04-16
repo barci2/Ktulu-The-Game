@@ -28,6 +28,10 @@ class ServerHandler(socketserver.BaseRequestHandler):
                     print("Client received: " + str(request_object))
                     self.networker.returnResponse(response=request_object)
 
+    ############################################################################################
+    ### This function should be used at the initialization of a program to set the Networker ###
+    ### It gives to handler the possibility to respond to the requests                       ###
+    ############################################################################################
 
     def setNetworker(self, networker):
         self.networker = networker

@@ -5,6 +5,16 @@ import base.requests
 from base.decorators import toThread
 import time
 
+    ##########################################
+    ### This file consist of network tests ###
+    ##########################################
+
+
+    #######################
+    ###     TEST 1      ###
+    #######################
+
+#function used later in test1 function
 @toThread
 def test1_response(client_networker, test_request_client):
     odp = client_networker.awaitResponse(test_request_client)
@@ -51,6 +61,10 @@ def test1():
     test_request_server.send()
 
     time.sleep(1)
+
+    #################################
+    ### Stops server and a client ###
+    #################################
 
     client_networker.disconnect()
     server_networker.serverEnd()

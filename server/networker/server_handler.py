@@ -6,11 +6,11 @@ import pickle
 ########################################
 
 class ServerHandler(socketserver.BaseRequestHandler):
-    """
+    """  It's handler for server.    """
 
-    It's handler for server.
-
-    """
+    ################################################################
+    ### Main function of a handler, which serves all connections ###
+    ################################################################
 
     def handle(self):
         while 1:
