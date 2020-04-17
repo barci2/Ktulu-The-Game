@@ -1,13 +1,13 @@
 # Server side networker
-                     import settings
-                     import socketserver
-                     import socket
-                     import threading
+import settings
+import socketserver
+import socket
+import threading
 from .               import server_handler
 from ..              import gameKernel
 from base.decorators import toThread
-                     import ipaddress
-                     import base.requests
+import ipaddress
+import base.requests
 
 #######################
 ### Networker class ###
