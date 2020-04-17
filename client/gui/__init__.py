@@ -1,5 +1,5 @@
+import client
 from PyQt5             import QtWidgets, QtCore
-                       import client
 from .chooseRoleWindow import ChooseRoleWindow
 from .playersList      import PlayersList
 from .actions          import Actions

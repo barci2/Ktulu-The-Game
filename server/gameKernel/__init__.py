@@ -1,9 +1,9 @@
 ###############
 ### Imports ###
 ###############
-                              import gameCode
+import gameCode
+import ipaddress
 from server.gameKernel.player import Player
-                              import ipaddress
 
 ##################
 ### Main Class ###

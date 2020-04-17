@@ -1,5 +1,5 @@
+import server
 from PyQt5            import QtWidgets, QtCore
-                      import server
 from base.decorators  import toThread
 from .gui             import GUI
 from .networker       import Networker
