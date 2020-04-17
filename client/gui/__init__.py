@@ -1,14 +1,14 @@
-from PyQt5 import QtWidgets, QtCore
-import client
+from PyQt5             import QtWidgets, QtCore
+                       import client
 from .chooseRoleWindow import ChooseRoleWindow
-from .playersList import PlayersList
-from .actions import Actions
-from .voting import Voting
-from .chat import Chat
-from .gameCodeWindow import GameCodeWindow
-from .layoutCreator import createLayout
-from .waitingScreen import WaitingScreen
-from base.decorators import toThread
+from .playersList      import PlayersList
+from .actions          import Actions
+from .voting           import Voting
+from .chat             import Chat
+from .gameCodeWindow   import GameCodeWindow
+from .layoutCreator    import createLayout
+from .waitingScreen    import WaitingScreen
+from base.decorators   import toThread
 
 
 class GUI(QtWidgets.QMainWindow):
@@ -21,8 +21,8 @@ class GUI(QtWidgets.QMainWindow):
         self._players_list = PlayersList()
 
         self._right_panel = createLayout(QtWidgets.QVBoxLayout, [
-                self._players_list, 
-                Actions(), 
+                self._players_list,
+                Actions(),
                 Voting()
             ])
 
@@ -78,6 +78,6 @@ class GUI(QtWidgets.QMainWindow):
 
     def setChat(self, chat):
         self._chat.setChat(chat)
-        
+
     def disableChat(self):
         self._chat.disableChat()

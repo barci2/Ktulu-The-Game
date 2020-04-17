@@ -10,9 +10,9 @@ import threading
 import ipaddress
 
 #importing application modules
-import settings
+                     import settings
 from base.decorators import toThread
-from . import server_handler
+from .               import server_handler
 
 ##################
 ### Main class ###

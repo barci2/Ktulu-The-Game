@@ -1,15 +1,13 @@
-###########
-# Imports #
-###########
-import gameCode
-
-##############
-# Main Class #
-##############
+###############
+### Imports ###
+###############
+                              import gameCode
 from server.gameKernel.player import Player
-import ipaddress
+                              import ipaddress
 
-
+##################
+### Main Class ###
+##################
 class GameKernel():
     def __init__(self):
         # Game Stuff

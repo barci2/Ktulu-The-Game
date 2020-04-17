@@ -1,9 +1,9 @@
 ###########
 # Imports #
 ###########
-from . import gameKernel
-from . import networker
-from . import chatManager
+from .               import gameKernel
+from .               import networker
+from .               import chatManager
 from base.decorators import toThread
 
 ################
