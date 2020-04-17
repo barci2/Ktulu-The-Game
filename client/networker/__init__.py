@@ -29,10 +29,10 @@ class Networker:
         try:
             # doesn't even have to be reachable
             s.connect(('10.255.255.255', 1))
-            self.IP = ipaddress.ip_address(s.getsockname()[0])
+            return ipaddress.ip_address(s.getsockname()[0])
         except:
             print("Ip getting failed.")
-            self.IP = ipaddress.ip_address('127.0.0.1')
+            return ipaddress.ip_address('127.0.0.1')
         finally:
             s.close()
 
@@ -45,6 +45,7 @@ class Networker:
         self.client_id = random.randint(1, 10000000000000)
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.IP = self.get_ip()
+        print(self.IP)
         self.awaitResponses = {}
         self.responses = {}
 
@@ -81,7 +82,8 @@ class Networker:
     ####################################################
 
     def send(self, request, *kwords, **args):
-        self.sock.sendall(request + b'#SEPARATOR#')
+        print('aaaa:'+str(self.IP))
+        self.sock.sendall(str(self.IP).encode() + b'#IP#' + request + b'#SEPARATOR#')
 
     #############################################
     ### Returns a response to a given request ###

@@ -45,7 +45,10 @@ def test1():
     ### Sending some messages between client and server ###
     #######################################################
     game_kernel = server.gameKernel.GameKernel()
+    game_kernel._gameStarted = False
+    game_kernel._manitou = 1
     game_kernel.registerPlayer(ipaddress.ip_address('127.0.0.1'))
+    server_networker.setGameKernel(game_kernel)
     test_request_client = base.requests.Request(client_networker)
     test_request_client._player = game_kernel.getPlayer('127.0.0.1')
     test_request_client._id = 1

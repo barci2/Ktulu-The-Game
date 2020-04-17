@@ -6,8 +6,8 @@
 from .               import server_handler
 from ..              import gameKernel
 from base.decorators import toThread
-                     import ipaddress
-                     import base.requests
+import ipaddress
+import base.requests
 
 #######################
 ### Networker class ###
@@ -71,6 +71,7 @@ class Networker:
     ######################
 
     def serverStart(self):
+        server_handler.ServerHandler.setNetworker(server_handler.ServerHandler, self)
         self.server = socketserver.TCPServer((self.host, settings.port), server_handler.ServerHandler)
         self.server_thread = threading.Thread(target=self.server.serve_forever)
         self.server_thread.daemon = True
@@ -101,3 +102,13 @@ class Networker:
             socket_to_close.close()
         self.server.shutdown()
         self.server.server_close()
+
+    ##########################################################
+    ###                 Handles all requests               ###
+    ##########################################################
+
+    def handle(self, ip, request):
+        print("Server is handling now:  " +str(request) + " from " + str(ip))
+        if ip not in [x.ip() for x in self.game_kernel.listPlayers()]:
+            self.game_kernel.registerPlayer(ip)
+            print("Player registered")
