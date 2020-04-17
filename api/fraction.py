@@ -1,8 +1,8 @@
 ###########
 # Imports #
 ###########
-
 from base.idObject import IdObject
+import server
 
 #######################
 # Initialization Code #
@@ -45,5 +45,4 @@ class Fraction(IdObject):
             self._cards.remove(card)
 
     def win(self):
-        print(f"Fraction named {self._name} has just won.")
-        print()
+        server.getGameKernel().winInfo(self)

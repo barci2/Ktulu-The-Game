@@ -7,10 +7,10 @@ from base.requests.placeholders.playerPlaceholder import PlayerPlaceholder
 ##############
 # Main Class #
 ##############
-class NewPlayerInfo(Request):
-    def __init__(self,networker,player):
+class InitRequest(Request):
+    def __init__(self,networker,name):
         super().__init__(networker)
-        self._player=PlayerPlaceholder(player)
+        self._name=name
 
-    def player(self):
-        return self._player
+    def name(self):
+        return self._name

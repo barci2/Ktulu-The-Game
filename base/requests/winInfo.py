@@ -9,6 +9,7 @@ from base.requests.placeholders.fractionPlaceholder import FractionPlaceholder
 ##############
 class WinInfo(Request):
     def __init__(self,fraction):
+        super().__init__(networker)
         self._fraction=FractionPlaceholder(fraction)
 
     def fraction(self):

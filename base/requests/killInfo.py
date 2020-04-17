@@ -8,7 +8,8 @@ from base.requests.placeholders.playerPlaceholder import PlayerPlaceholder
 # Main Class #
 ##############
 class KillInfo(Request):
-    def __init__(self,player):
+    def __init__(self,networker,player):
+        super().__init__(networker)
         self._player=PlayerPlaceholder(player)
 
     def player(self):

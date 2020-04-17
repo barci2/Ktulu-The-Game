@@ -27,14 +27,17 @@ class Card(IdObject,Comparable):
         self._fraction=fraction
         if fraction!=None:
             fraction.registerCard(self)
+        self._player=None
 
         #Structurizing actions
         self._actions_dict={}
         for action in [getattr(self,attr) for attr in dir(self) if type(getattr(self,attr))==Action]:
+            action.setCard(self)
             if action.groupName() not in self._actions_dict:
                 self._actions_dict[action.groupName()]=[action]
             else:
                 self._actions_dict[action.groupName()].append(action)
+        self.renumerateActions()
 
     # Interface Functions
     def name(self):
@@ -46,11 +49,22 @@ class Card(IdObject,Comparable):
     def listActions(self,split=True):
         return self._actions_dict if split else sum(self._actions_dict.values(),[])
 
+    def getAction(self,id):
+        return self._actions_ids[id] if id in self._actions_ids else None
+
+    def player(self):
+        return self._player
+
     # Management Functions
+    def setPlayer(self,player):
+        self._player=player
     def reset(self):
         super().reset()
         for action in sum(self._actions_dict.values(),[]):
             action.reset()
+        self.renumerateActions()
 
-    def registerActionGroup(self,actionGroup):
-        self._actionsGroups.append(actionGroup)
+    def renumerateActions(self):
+        self._actions_ids={}
+        for action in self.listActions(split=False):
+            self._actions_ids[action.id()]=action

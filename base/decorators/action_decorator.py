@@ -3,6 +3,7 @@
 ###########
 
 from base.idObject import IdObject
+from base.requests import ActionInfo
 
 ######################
 # Initalization Code #
@@ -30,6 +31,7 @@ class Action(IdObject):
         self._name=name
         self._group_name=group_name
         self._enabled=True
+        self._card=None
 
     # Interface Functions
     def name(self):
@@ -44,15 +46,23 @@ class Action(IdObject):
     def isEnabled(self):
         return self._enabled
 
+    def card(self):
+        return self._card
+
     # Management Functions
     def __call__(self):
         return self._func() if self._enabled else None
 
+    def setCard(self,card):
+        self._card=card
+
     def enable(self):
         self._enabled=True
+        ActionInfo(self).send(self.card().player())
 
     def disable(self):
-        sefl._disabled=True
+        self._disabled=True
+        ActionInfo(self).send(self.card().player())
 
 #################
 # Main Function #

@@ -8,7 +8,8 @@ from base.requests.placeholders.actionPlaceholder import ActionPlaceholder
 # Main Class #
 ##############
 class ActionInfo(Request):
-    def __init__(self,action):
+    def __init__(self,networker,action):
+        super().__init__(networker)
         self._action=ActionPlaceholder(action)
 
     def action(self):
