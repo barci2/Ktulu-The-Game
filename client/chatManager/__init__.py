@@ -1,5 +1,10 @@
 from base.decorators import toThread
 
+###############################################################################################
+### Class which serves client part of a chat. It stores received messages, communicates     ###
+### GUI about them and sends messages to the server                                         ###
+###############################################################################################
+
 class ChatManager:
     def __init__(self, *args, **kwargs):
         self._chats_count = 0
@@ -10,6 +15,10 @@ class ChatManager:
     @toThread
     def start(self):
         pass
+
+    #######################
+    ### Basic functions ###
+    #######################
 
     def setNetworker(self, networker):
         self._networker = networker
@@ -30,8 +39,16 @@ class ChatManager:
         self._gui.setChat(chat_name)
         self._current_chat = chat_name
 
+    def disableChat(self):
+        self._gui.disableChat()
+
+    #######################################
+    ### Sendind a message to the server ###
+    #######################################
+
     def sendMessage(self, message):
         self.addMessage(message, 0, self._current_chat)
+        #There will be of sending message to the server
 
     def addMessage(self, message, player, chat_name):
         self._gui.addMessage(
@@ -40,6 +57,3 @@ class ChatManager:
 
     def createMessage(self, message, player) -> str:
         return f"[{self._players[player]['name']}] {message}"
-
-    def disableChat(self):
-        self._gui.disableChat()

@@ -21,6 +21,10 @@ class Chat:
         self.messages.append(message)
         return True
 
+    #########################################
+    ### Some basic functions of the class ###
+    #########################################3
+
     def registerMember(self, player):
         self.members.append(player)
 

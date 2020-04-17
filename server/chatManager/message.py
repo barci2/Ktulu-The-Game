@@ -25,6 +25,10 @@ class Message:
     def date(self):
         return self._date
 
+    ##################################################################################################
+    ### If message has an id of responded message, then it is automaticly considered as a response ###
+    ##################################################################################################
+
     def isResponse(self):
         if self._responseId is None:
             return False

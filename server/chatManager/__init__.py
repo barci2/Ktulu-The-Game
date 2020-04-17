@@ -12,6 +12,9 @@ class ChatManager:
         self.registerChat("Gathering")
         self.current_chat = self._chats[0]
 
+    ##########################################
+    ### Serving basic chat functionalities ###
+    ##########################################
 
     def registerChat(self, name):
         new_chat = server.chatManager.chat.Chat(name)
@@ -35,5 +38,16 @@ class ChatManager:
         for chat in self._chats:
             if chat.name == chat_name:
                 return chat.send(message)
+
+     ###########################################################################
+     ###  Functions informaing players when there is new message on the chat ###
+     ###########################################################################
+
+    def infoPlayers(self, chat, message):
+        for player in chat.members:
+            self.infoPlayer(message)
+
+    def infoPlayer(self, message):
+        pass
 
 
