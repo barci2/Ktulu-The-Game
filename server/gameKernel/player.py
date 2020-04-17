@@ -3,16 +3,32 @@
 ###########
 import ipaddress
 import api.events
+from base.idObject import IdObject
+
+#######################
+# Initialization Code #
+#######################
+_players_ids=set()
 
 ##############
 # Main Class #
 ##############
-class Player():
+class Player(IdObject):
     def __init__(self,ip,networker,game_kernel):
+        global _players_ids
+        super().__init__(_players_ids)
+
         self._ip=(ip if type(ip)==ipaddress.IPv4Address else ipaddress.ip_address(ip))
         self._card=None
         self._networker=networker
         self._game_kernel=game_kernel
+        self._name=""
+
+    def setName(self,name):
+        self._name=name
+
+    def name(self):
+        return self._name
 
     def kill(self):
         #self._networker.disconnect(self)
