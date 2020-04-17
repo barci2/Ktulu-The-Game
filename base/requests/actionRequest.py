@@ -7,4 +7,16 @@ from base.requests.request import Request
 # Main Class #
 ##############
 class ActionRequest(Request):
-    pass
+    def __init__(self,fraction_id,card_id,action_id):
+        self._fraciton_id=fraction_id
+        self._card_id=card_id
+        self._action_id=action_id
+
+    def fractionId(self):
+        return self._fraction_id
+
+    def cardId(self):
+        return self._card_id
+
+    def actionId(self):
+        return self._action_id
