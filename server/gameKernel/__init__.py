@@ -96,6 +96,8 @@ class GameKernel(QueuingMachine):
     def processRequest(self,request):
         if type(request)==InitRequest:
             self.processInitRequest(request)
+        elif type(request)==LaunchRequest:
+            self.processLaunchRequest(request)
         elif type(request)==ActionRequest:
             self.processActionRequest(request)
         elif type(request)==KillRequest:
@@ -111,6 +113,11 @@ class GameKernel(QueuingMachine):
         InitInfo(self._networker,self.listPlayers()+[self._manitou]).send(init_request.player())
         for player in self.listPlayers()+[self._manitou]:
             NewPlayerInfo(self._networker,init_request.player()).send(player)
+
+    def processLaunchRequest(self,launch_request):
+        if launch_request.player()!=self._manitou:
+            return
+        self.launch()
 
     def processActionRequest(self,action_request):
         if self._state!="Running":
