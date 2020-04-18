@@ -15,7 +15,7 @@ class GameCodeWindow(QtWidgets.QDialog):
         self.setLayout(self._layout)
 
     def sendAccessKey(self):
-        response = self._networker.sendGameCode(self._input.text())
+        response = self._networker.connectToServer(self._input.text())
         
         if response == 0:
             self.close()
