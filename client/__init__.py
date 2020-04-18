@@ -13,6 +13,7 @@ roles = ['Player', 'Master']
 ################
 # Initial Code #
 ################
+print("AAAA")
 # Constructing main classes
 app = QtWidgets.QApplication([])
 _networker = Networker()
@@ -28,13 +29,19 @@ _chatManager.setNetworker(_networker)
 
 _gui.setNetworker(_networker)
 _gui.setChatManager(_chatManager)
+print("BBBBB")
 
 #############
 # Functions #
 #############
 def start():
+    print("CCCCC")
     global _gui, _networker, _chatManager,app
     _networker.start()
+    print("EEE")
     _chatManager.start()
+    print("FFF")
     _gui.start()
+    print("GGG")
     app.exec_()
+    print("DDDDD")
