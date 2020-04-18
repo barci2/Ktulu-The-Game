@@ -28,6 +28,11 @@ class ChatManager:
             if chat.name == chat_name:
                 chat.registerMember(player)
 
+    def deregisterMember(self, chat_name, player):
+        for chat in self._chats:
+            if chat.name == chat_name:
+                chat.deregisterMember(player)
+
     #####################################################################################
     ### Sends a message to the chat. Returns True if message is sent, False otherwise ###
     #####################################################################################

@@ -10,7 +10,6 @@ class ChatManager:
         self._chats_count = 0
         self._chats = []
         self._players = []
-        self._current_chat = 0
 
     @toThread
     def start(self):
@@ -37,7 +36,6 @@ class ChatManager:
 
     def setChat(self, chat_name):
         self._gui.setChat(chat_name)
-        self._current_chat = chat_name
 
     def disableChat(self):
         self._gui.disableChat()
@@ -46,8 +44,8 @@ class ChatManager:
     ### Sendind a message to the server ###
     #######################################
 
-    def sendMessage(self, message):
-        self.addMessage(message, 0, self._current_chat)
+    def sendMessage(self, message, chat_name):
+        self.addMessage(message, 0, chat_name)
         #There will be of sending message to the server
 
     def addMessage(self, message, player, chat_name):

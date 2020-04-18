@@ -112,3 +112,4 @@ class Networker:
         if ip not in [x.ip() for x in self.game_kernel.listPlayers()]:
             self.game_kernel.registerPlayer(ip)
             print("Player registered")
+

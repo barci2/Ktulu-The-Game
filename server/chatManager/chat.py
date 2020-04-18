@@ -28,6 +28,9 @@ class Chat:
     def registerMember(self, player):
         self.members.append(player)
 
+    def deregisterMember(self, player):
+        self.members.remove(player)
+
     def enable(self):
         self._enabled = True
 
