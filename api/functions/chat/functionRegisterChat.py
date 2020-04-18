@@ -1,12 +1,12 @@
 ###########
 # Imports #
 ###########
+import server
 
 #################
 # Main Function #
 #################
 def registerChat(name,cards):
-    print(f"Registered chat '{name}' with the following members:")
+    server.getChatManager().registerChat(name)
     for card in cards:
-        print("Card '{}' in fraction '{}'".format(card.name(),card.fraction().name()))
-    print()
+        server.getChatManager().registerMember(name,card.player())

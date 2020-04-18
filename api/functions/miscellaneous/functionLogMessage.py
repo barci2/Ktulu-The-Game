@@ -1,10 +1,11 @@
 ###########
 # Imports #
 ###########
+import server
 
 #################
 # Main Function #
 #################
-def logMessage(chatName,message):
-    print(f"Message:\n{chatName}\n logged onto chat '{message}'")
-    print()
+def logMessage(chat_name,message):
+    if not server.getChatManager().send(message,chat_name):
+        raise RuntimeError("Could not log a message into the chat")
