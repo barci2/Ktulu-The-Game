@@ -105,6 +105,12 @@ class Networker:
         self.awaitResponses[response.id()].set()
         self.responses[response.id()] = response
 
+    def handle(self, request):
+        if type(request) in [base.requests.ActionInfo, base.requests.ActionRequest, base.requests.CardInfo, base.requests.InitInfo, base.requests.KickRequest, base.requests.KillInfo, base.requests.NewPlayerInfo, base.requests.WinInfo]:
+            self._gui.queueRequest(request)
+        else:
+            self._chatManager.queueRequest(request)
+
     ###################
     ### Adds player ###
     ###################

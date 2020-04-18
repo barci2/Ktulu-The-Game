@@ -1,10 +1,11 @@
 import server.chatManager.chat
+import base.queuingMachine
 
 #####################################
 ### Class which manages all chats ###
 #####################################
 
-class ChatManager:
+class ChatManager(base.queuingMachine.QueuingMachine):
 
     def start(self):
         self._chats = []
