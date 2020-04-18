@@ -6,5 +6,4 @@
 # Main Function #
 #################
 def disableChat(name):
-    print(f"Disabled chat '{name}'")
-    print()
+    server.getChatManager().disableChat(name)

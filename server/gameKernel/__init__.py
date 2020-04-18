@@ -127,17 +127,10 @@ class GameKernel(QueuingMachine):
         action_id=action_request.actionId()
         card_id=action_request.cardId()
         fraction_id=action_request.fractionId()
-<<<<<<< HEAD
         if (player.card().id()==card_id and
            player.card().fraction().id()==fraction_id and
            player.card().getAction(action_id)!=None):
             player.card().getAction(action_id).getAction(action_id)()
-=======
-        #if player.card().id()==card_id and
-        #   player.card().fraction().id()==fraction_id and
-        #   player.card().getAction(action_id)!=None:
-        #    player.card().getAction(action_id).getAction(action_id)()
->>>>>>> 6b87d34d3690ca915115a793f35aaf8b3f06b716
 
     def processKillRequest(self,kill_request):
         if self._state!="Running":

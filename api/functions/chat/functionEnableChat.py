@@ -1,10 +1,10 @@
 ###########
 # Imports #
 ###########
+import server
 
 #################
 # Main Function #
 #################
 def enableChat(name):
-    print(f"Enabled chat '{name}'")
-    print()
+    server.getChatManager().enableChat(name)
