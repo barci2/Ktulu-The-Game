@@ -1,14 +1,15 @@
 import server.chatManager.chat
+import base.queuingMachine
+import base.requests.sendMessageRequest
 
 #####################################
 ### Class which manages all chats ###
 #####################################
 
-class ChatManager:
+class ChatManager(base.queuingMachine.QueuingMachine):
 
     def start(self):
         self._chats = []
-        self.current_chat = self._chats[0]
 
     ##########################################
     ### Serving basic chat functionalities ###
@@ -17,11 +18,6 @@ class ChatManager:
     def registerChat(self, name):
         new_chat = server.chatManager.chat.Chat(name)
         self._chats.append(new_chat)
-
-    def changeCurrentChat(self, chat_name):
-        for chat in self._chats:
-            if chat.name == chat_name:
-                self.current_chat = chat
 
     def registerMember(self, chat_name, player):
         for chat in self._chats:
@@ -32,6 +28,16 @@ class ChatManager:
         for chat in self._chats:
             if chat.name == chat_name:
                 chat.deregisterMember(player)
+
+    def enableChat(self, chat_name):
+        for chat in self._chats:
+            if chat.name == chat_name:
+                chat.enable()
+
+    def disableChat(self, chat_name):
+        for chat in self._chats:
+            if chat.name == chat_name:
+                chat.disable()
 
     #####################################################################################
     ### Sends a message to the chat. Returns True if message is sent, False otherwise ###
@@ -48,7 +54,28 @@ class ChatManager:
 
     def infoPlayers(self, chat, message):
         for player in chat.members:
-            self.infoPlayer(message)
+            self.infoPlayer(message, player)
 
-    def infoPlayer(self, message):
-        pass
+    def infoPlayer(self, message, player):
+        player_ip = player.ip()
+        message_request = base.requests.serverMessageRequest(self._networker, message, player)
+        message_request.send(player=player)
+
+    #################################################################
+    ###                Processing an request                      ###
+    #################################################################
+
+    def processRequest(self, request):
+        if type(request) == base.requests.sendMessageRequest.sendMessageRequest:
+            print("Server received message:" + str(request.message()))
+            self.send(request.message(), "Test player")
+
+    ##################################################################
+    ###                  Setting up a relations                    ###
+    ##################################################################
+
+    def setNetworker(self, networker):
+        self._networker = networker
+
+    def setGameKernel(self, game_kernel):
+        self._game_kernel = game_kernel

@@ -27,6 +27,7 @@ class ServerHandler(socketserver.BaseRequestHandler):
                     request_object = pickle.loads(object)
                     print("Client received: " + str(request_object))
                     self.networker.returnResponse(response=request_object)
+                    self.networker.handle(request_object)
 
     ############################################################################################
     ### This function should be used at the initialization of a program to set the Networker ###

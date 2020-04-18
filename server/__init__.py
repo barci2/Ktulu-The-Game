@@ -19,8 +19,8 @@ _game_kernel=gameKernel.GameKernel()
 #_networker.setChatManager(_chat_manager)
 #_networker.setGameKernel(_game_kernel)
 
-#_chat_manager.setGameKernel(_game_kernel)
-#_chat_manager.setNetworker(_networker)
+_chat_manager.setGameKernel(_game_kernel)
+_chat_manager.setNetworker(_networker)
 
 #_game_kernel.setNetworker(_networker)
 #_game_kernel.setChatManager(_chat_manager)

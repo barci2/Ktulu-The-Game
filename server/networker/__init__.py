@@ -112,4 +112,9 @@ class Networker:
         if ip not in [x.ip() for x in self.game_kernel.listPlayers()]:
             self.game_kernel.registerPlayer(ip)
             print("Player registered")
-
+        player = self.game_kernel.getPlayer(ip)
+        if type(request) in [base.requests.ActionInfo, base.requests.ActionRequest, base.requests.CardInfo, base.requests.InitInfo, base.requests.KickRequest, base.requests.KillInfo, base.requests.NewPlayerInfo, base.requests.WinInfo]:
+            self.game_kernel.queueRequest(request)
+        else:
+            request.set_player(player)
+            self.chat_manager.queueRequest(request)

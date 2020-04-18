@@ -1,4 +1,5 @@
 from base.decorators import toThread
+from base.requests import sendMessageRequest
 
 ###############################################################################################
 ### Class which serves client part of a chat. It stores received messages, communicates     ###
@@ -47,6 +48,9 @@ class ChatManager:
     def sendMessage(self, message, chat_name):
         self.addMessage(message, 0, chat_name)
         #There will be of sending message to the server
+        message_request = sendMessageRequest.sendMessageRequest(self._networker)
+        message_request.send()
+
 
     def addMessage(self, message, player, chat_name):
         self._gui.addMessage(
