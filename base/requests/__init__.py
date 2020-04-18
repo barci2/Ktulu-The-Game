@@ -2,6 +2,7 @@ from base.requests.request       import Request
 from base.requests.newPlayerInfo import NewPlayerInfo
 from base.requests.initInfo      import InitInfo
 from base.requests.initRequest   import InitRequest
+from base.requests.launchRequest import LaunchRequest
 from base.requests.cardInfo      import CardInfo
 from base.requests.actionRequest import ActionRequest
 from base.requests.actionInfo    import ActionInfo
