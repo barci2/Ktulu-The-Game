@@ -82,7 +82,6 @@ class Networker:
     ####################################################
 
     def send(self, request, *kwords, **args):
-        print('aaaa:'+str(self.IP))
         self.sock.sendall(str(self.IP).encode() + b'#IP#' + request + b'#SEPARATOR#')
 
     #############################################
@@ -119,13 +118,14 @@ class Networker:
         self._gui.addPlayer(player)
         self._chatManager.addPlayer(player)
 
+    # Po co to tu jest, wiadomości wysyła chatmanager
     # At client received message from server
-    def addMessage(self, message, chat):
-        self._chatManager.addMessage(message, chat)
-        self._gui.addMessage(message, chat)
+    #def addMessage(self, message, chat):
+    #    self._chatManager.addMessage(message, chat)
+    #    self._gui.addMessage(message, chat)
 
-    def sendMessage(self, message: str, chat):
-        pass
+    #def sendMessage(self, message: str, chat):
+    #    pass
 
     #####################################
     ### Shuts server and socket down  ###
