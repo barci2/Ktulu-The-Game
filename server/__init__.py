@@ -9,21 +9,20 @@ from base.decorators import toThread
 ################
 # Initial Code #
 ################
-
 # Constructing main classes
 _networker=networker.Networker()
 _chat_manager=chatManager.ChatManager()
 _game_kernel=gameKernel.GameKernel()
 
 # Sharing classes between themselves
-#_networker.setChatManager(_chat_manager)
-#_networker.setGameKernel(_game_kernel)
+_networker.setChatManager(_chat_manager)
+_networker.setGameKernel(_game_kernel)
 
 _chat_manager.setGameKernel(_game_kernel)
 _chat_manager.setNetworker(_networker)
 
-#_game_kernel.setNetworker(_networker)
-#_game_kernel.setChatManager(_chat_manager)
+_game_kernel.setNetworker(_networker)
+_game_kernel.setChatManager(_chat_manager)
 
 #############
 # Functions #
@@ -46,3 +45,7 @@ def getChatManager():
 def getGameKernel():
     global _game_kernel
     return _game_kernel
+
+def getServerCode():
+    global _networker
+    return _networker.getServerCode()

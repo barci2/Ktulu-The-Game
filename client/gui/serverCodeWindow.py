@@ -1,25 +1,21 @@
 from PyQt5 import QtWidgets
 from .layoutCreator import createLayout
 
-class GameCodeWindow(QtWidgets.QDialog):
+class ServerCodeWindow(QtWidgets.QDialog):
     def __init__(self, networker, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
         self._networker = networker
-
+        self.setWindowTitle("Enter Server Code")
         self._input = QtWidgets.QLineEdit()
-
-        self._input.returnPressed.connect(self.sendAccessKey())
-
+        self._input.setPlaceholderText("Server Code")
+        self._input.returnPressed.connect(self.sendAccessKey)
         self._layout = createLayout(QtWidgets.QHBoxLayout, [self._input])
         self.setLayout(self._layout)
 
     def sendAccessKey(self):
         response = self._networker.connectToServer(self._input.text())
-        
+
         if response == 0:
             self.close()
         else:
-            self._layout.addWidget(QtWidgets.QLabel("Incorrect game code"))
-
-
+            self._layout.addWidget(QtWidgets.QLabel("Incorrect server code")) # To Fix
