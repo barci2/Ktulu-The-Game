@@ -3,25 +3,30 @@
 ###############
 import gameCode
 import ipaddress
+import queue
 from server.gameKernel.player import Player
-from base.requests import *
+from base.requests            import *
+from base.queuingMachine      import QueuingMachine
 
 ##################
 ### Main Class ###
 ##################
-class GameKernel():
+class GameKernel(QueuingMachine):
     def __init__(self):
+        super().__init__()
         # Game Stuff
         self._manitou=None
         self._players_ips={}
         self._players_ids={}
         self._state="Down"
+        self._request_queue=queue.Queue()
 
         # Main Classes
         self._networker=None
         self._chat_manager=None
 
     def start(self):
+        super().start()
         if self._state!="Down":
             raise RuntimeError("start executed multiple times")
         self._state="Idle"
