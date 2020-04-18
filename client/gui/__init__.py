@@ -48,7 +48,6 @@ class GUI(QtWidgets.QMainWindow):
         dialog_window = ChooseRoleWindow()
         return dialog_window.choose()
 
-    #@toThread
     def start(self):
         role = self.chooseRole()
         enter_code = GameCodeWindow(self._networker)
