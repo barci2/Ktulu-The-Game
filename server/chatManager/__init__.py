@@ -8,8 +8,6 @@ class ChatManager:
 
     def start(self):
         self._chats = []
-        self.registerChat("Mafia")
-        self.registerChat("Gathering")
         self.current_chat = self._chats[0]
 
     ##########################################
@@ -49,5 +47,3 @@ class ChatManager:
 
     def infoPlayer(self, message):
         pass
-
-
