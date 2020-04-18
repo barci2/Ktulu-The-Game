@@ -10,3 +10,4 @@ from base.requests.winInfo       import WinInfo
 from base.requests.killRequest   import KillRequest
 from base.requests.killInfo      import KillInfo
 from base.requests.kickRequest   import KickRequest
+from base.requests.kickInfo      import KickInfo

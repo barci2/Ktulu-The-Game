@@ -51,7 +51,7 @@ class GUI(QtWidgets.QMainWindow):
     @toThread
     def start(self):
         role = self.chooseRole()
-        enter_code = GameCodeWindow()
+        enter_code = GameCodeWindow(self._networker)
         enter_code.exec_()
 
         self._waiting = True

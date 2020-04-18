@@ -1,10 +1,12 @@
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets,QtGui
 import client
 
 class ChooseRoleWindow(QtWidgets.QDialog):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.choosen_role = ""
+        self.chosen_role = ""
+        self.setWindowTitle("Game Role")
+        self.setWindowIcon(QtGui.QIcon("data/icons/role.png"))
 
         layout = QtWidgets.QHBoxLayout()
 
@@ -18,10 +20,14 @@ class ChooseRoleWindow(QtWidgets.QDialog):
 
     def setRole(self, role):
         def _setRole():
-            self.choosen_role = role
+            self.chosen_role = role
             self.close()
         return _setRole
 
     def choose(self):
         self.exec_()
-        return self.choosen_role
+        return self.chosen_role
+
+    def closeEvent(self,event):
+        if self.chosen_role=="":
+            exit()
