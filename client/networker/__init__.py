@@ -45,7 +45,6 @@ class Networker:
         self.client_id = random.randint(1, 10000000000000)
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.IP = self.get_ip()
-        print(self.IP)
         self.awaitResponses = {}
         self.responses = {}
 
@@ -63,9 +62,10 @@ class Networker:
     #### Starts server run at client side which is used to get answers from server ###
     ##################################################################################
 
-    def connectToServer(self, adress):
+    def connectToServer(self, address):
+        print(ipaddress.ip_address(address))
         try:
-            self.server_adress = ipaddress.ip_address(adress)
+            self.server_adress = ipaddress.ip_address(address)
         except:
             return "Wrong code"
         self.answer_receiver = socketserver.TCPServer((str(self.server_adress), settings.port + 1), server_handler.ServerHandler)
@@ -76,6 +76,7 @@ class Networker:
             self.sock.connect((str(self.server_adress), settings.port))
         except:
             return "Unable to connect"
+        return 0
 
     ####################################################
     ### Sends request with a separator to the server ###

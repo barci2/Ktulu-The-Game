@@ -5,7 +5,7 @@ from .playersList import PlayersList
 from .actions import Actions
 from .voting import Voting
 from .chat import Chat
-from .gameCodeWindow import GameCodeWindow
+from .serverCodeWindow import ServerCodeWindow
 from .layoutCreator import createLayout
 from .waitingScreen import WaitingScreen
 from base.decorators import toThread
@@ -53,8 +53,14 @@ class GUI(QtWidgets.QMainWindow, QueuingMachine):
 
         role = self.chooseRole()
         self.setRole(role)
-        enter_code = GameCodeWindow(self._networker)
-        enter_code.exec_()
+
+        if role == client.roles[1]:
+            import server
+            server.start()
+            self._networker.connectToServer(server.getServerCode())
+        else:
+            enter_code = ServerCodeWindow(self._networker)
+            enter_code.exec_()
 
         self._waiting_screen = WaitingScreen(self._networker, self._players_list, role)
         self.setCentralWidget(self._waiting_screen)

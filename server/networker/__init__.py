@@ -26,12 +26,10 @@ class Networker:
     @toThread
     def start(self):
         self.local = False
-        self.get_ip()
         self.players = []
         self.server_thread = None
         self.server_started = False
         self.client_connection_sock = {}
-        self.IP = self.get_ip()
         server_handler.ServerHandler.command_handler = self
 
     ###################################
@@ -48,7 +46,7 @@ class Networker:
     ### Gets ip of host ###
     #######################
 
-    def get_ip(self):
+    def getServerCode(self):
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         try:
             s.connect(('10.255.255.255', 1))
