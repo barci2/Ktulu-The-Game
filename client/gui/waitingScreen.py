@@ -1,20 +1,26 @@
 from PyQt5 import QtWidgets
 from .layoutCreator import createLayout
-from .playersList import PlayersList
+from base import requests
 
 class WaitingScreen(QtWidgets.QWidget):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, networker, players_list, role, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self._players_list = PlayersList()
+        self._players_list = players_list
+        self._networker = networker
 
-        self.setLayout(createLayout(QtWidgets.QVBoxLayout, [
-        	QtWidgets.QLabel("Game Code"), 
-        	self._players_list
-        	]))
+        widgets = [
+            QtWidgets.QLabel("Game Code"),
+            self._players_list
+            ]
 
-    def addPlayer(self, player):
-        self._players_list.addPlayer(player)
+        if role == "Master":
+            button = QtWidgets.QPushButton("Start game")
+            button.clicked.connect(self.startGame)
+            widgets.append(button)
 
-    def removePlayer(self, player):
-        self._players_list.removePlayer(player)
+        self.setLayout(createLayout(QtWidgets.QVBoxLayout, widgets))
+
+    def startGame(self):
+        request = requests.LaunchRequest(self._networker)
+        request.send()

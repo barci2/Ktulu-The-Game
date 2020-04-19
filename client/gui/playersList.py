@@ -1,5 +1,7 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
 from .layoutCreator import createLayout
+from base import requests
+
 
 class PlayerLabel(QtWidgets.QWidget):
     def __init__(self, player, kick_request, kill_request, *args, **kwargs):
@@ -7,38 +9,47 @@ class PlayerLabel(QtWidgets.QWidget):
 
         widgets = []
 
-        if kick_request != None:
+        if kick_request is not None:
             button = QtWidgets.QPushButton("Kick")
             button.clicked.connect(kick_request)
             widgets.append(button)
 
-        if kill_request != None:
+        if kill_request is not None:
             button = QtWidgets.QPushButton("Kill")
             button.clicked.connect(kill_request)
             widgets.append(button)
 
-        widgets.append(QtWidgets.QLabel(player['name']))
+        widgets.append(QtWidgets.QLabel(player.name()))
 
         self.setLayout(createLayout(QtWidgets.QHBoxLayout, widgets))
 
 
 class PlayersBox(QtWidgets.QWidget):
-    def __init__(self, role, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._is_master = (role == "Master") # Czy bedzie dzialac poprawnie?
-
         self._layout = createLayout(QtWidgets.QVBoxLayout, ["Stretch"])
         self._labels = {}
 
         self.setLayout(self._layout)
 
+    ###############
+    ### Setters ###
+    ###############
+    def setRole(self, role):
+        self._is_master = (role == "Master")
+
+    def setNetworker(self, networker):
+        self._networker = networker
+
+    ##########################
+    ### Players Management ###
+    ##########################
     def addPlayer(self, player):
         kick_request = None
         kill_request = None
         if self._is_master:
-            pass
-            # kick_request = request
-            # kill_request = request
+            kick_request = self.kickPlayer(player)
+            kill_request = self.killPlayer(player)
         label = PlayerLabel(player, kick_request, kill_request)
         self._labels[player] = label
         self._layout.addWidget(label)
@@ -48,22 +59,44 @@ class PlayersBox(QtWidgets.QWidget):
         self._layout.removeAt(label)
         self._labels.pop(player)
 
+    ########################
+    ### Requests Senders ###
+    ########################
+    def kickPlayer(self, player):
+        def kick():
+            request = requests.KickRequest(self._networker, player)
+            request.send()
+
+        return kick
+
+    def killPlayer(self, player):
+        def kill():
+            request = requests.KillRequest(self._networker, player)
+            request.send()
+
+        return kill
+
 
 class PlayersList(QtWidgets.QWidget):
-    def __init__(self, role, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self._scroll_area = QtWidgets.QScrollArea()
 
         self._scroll_area.setBackgroundRole(QtGui.QPalette.Midlight)
-        self._scroll_area.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
-        self._scroll_area.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self._scroll_area.setVerticalScrollBarPolicy(
+            QtCore.Qt.ScrollBarAsNeeded)
+        self._scroll_area.setHorizontalScrollBarPolicy(
+            QtCore.Qt.ScrollBarAlwaysOff)
         self._scroll_area.setWidgetResizable(True)
 
-        self._players_box = PlayersBox(role)
+        self._players_box = PlayersBox()
         self._scroll_area.setWidget(self._players_box)
 
         self.setLayout(createLayout(QtWidgets.QVBoxLayout, [self._scroll_area]))
+
+    def setRole(self, role):
+        self._players_box.setRole(role)
 
     def addPlayer(self, player):
         self._players_box.addPlayer(player)
@@ -71,5 +104,5 @@ class PlayersList(QtWidgets.QWidget):
     def removePlayer(self, player):
         self._players_box.removePlayer(player)
 
-
-
+    def setNetworker(self, networker):
+        self._players_box.setNetworker(networker)

@@ -9,11 +9,14 @@ from .gameCodeWindow import GameCodeWindow
 from .layoutCreator import createLayout
 from .waitingScreen import WaitingScreen
 from base.decorators import toThread
+from base.queuingMachine import QueuingMachine
+from base import requests
 
-
-class GUI(QtWidgets.QMainWindow):
+class GUI(QtWidgets.QMainWindow, QueuingMachine):
     def __init__(self, rect=QtCore.QRect(60, 60, 700, 500), *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        QtWidgets.QMainWindow.__init__(self)
+        QueuingMachine.__init__(self)
+
         self.setGeometry(rect)
         self.setWindowTitle("Ktulu")
 
@@ -37,23 +40,23 @@ class GUI(QtWidgets.QMainWindow):
             self._chat, self._right_panel
         ])
 
-        self._layout.setStretch(0, 1)
-        self._layout.setStretch(0, 1)
+        #self._layout.setStretch(0, 1)
+        #self._layout.setStretch(1, 1)
 
         self._central_widget.setLayout(self._layout)
 
         self.setCentralWidget(self._central_widget)
-        self._waiting = False
 
     @toThread
     def start(self):
+        QueuingMachine.start(self)
+
         role = self.chooseRole()
         self.setRole(role)
         enter_code = GameCodeWindow(self._networker)
         enter_code.exec_()
 
-        self._waiting = True
-        self._waiting_screen = WaitingScreen(self._networker, role)
+        self._waiting_screen = WaitingScreen(self._networker, self._players_list, role)
         self.setCentralWidget(self._waiting_screen)
 
     def startGame(self):
@@ -75,19 +78,43 @@ class GUI(QtWidgets.QMainWindow):
 
     def setNetworker(self, networker):
         self._networker = networker
+        self._players_list.setNetworker(networker)
+
+    ###########################
+    ### Requests Management ###
+    ###########################
+    def processRequest(self, request):
+        if type(request) == requests.KickInfo:
+            self.proccessKickInfo(request)
+        elif type(request) == requests.KillInfo:
+            self.proccessKillInfo(request)
+        elif type(request) == requests.NewPlayerInfo:
+            self.preccessNewPlayerInfo(request)
+        elif type(request) == requests.InitInfo:
+            self.proccessInitInfo(request)
+
+    def proccessKickInfo(self, request):
+        self.removePlayer(request.player())
+
+    def proccessKillInfo(self, request):
+        pass
+
+    def preccessNewPlayerInfo(self, request):
+        self.addPlayer(request.player())
+
+    def proccessInitInfo(self, request):
+        players = request.listPlayers()
+        for player in players:
+            self.addPlayer(player)
 
     ##########################
     ### Players Management ###
     ##########################
     def addPlayer(self, player):
         self._players_list.addPlayer(player)
-        if self._waiting:
-            self._waiting_screen.addPlayer(player)
 
     def removePlayer(self, player):
         self._players_list.removePlayer(player)
-        if self._waiting:
-            self._waiting_screen.removePlayer(player)
 
     ########################
     ### Chats Management ###
@@ -101,5 +128,5 @@ class GUI(QtWidgets.QMainWindow):
     def setActiveChat(self, chat):
         self._chat.setChat(chat)
 
-    def disableChat(self):
-        self._chat.disableChat()
+    def switchChat(self):
+        self._chat.switchChat()

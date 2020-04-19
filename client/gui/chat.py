@@ -53,5 +53,5 @@ class Chat(QtWidgets.QWidget):
         self._messages_scroll_areas.addWidget(self._chats[chat_name])
 
     # TODO: change "Send" button color (or sth else, to show that chat is disabled)
-    def disableChat(self):
+    def switchChat(self):
         pass
