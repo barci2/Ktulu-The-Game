@@ -110,23 +110,6 @@ class Networker:
         else:
             self._chatManager.queueRequest(request)
 
-    ###################
-    ### Adds player ###
-    ###################
-
-    def addPlayer(self, player):
-        self._gui.addPlayer(player)
-        self._chatManager.addPlayer(player)
-
-    # Po co to tu jest, wiadomości wysyła chatmanager
-    # At client received message from server
-    #def addMessage(self, message, chat):
-    #    self._chatManager.addMessage(message, chat)
-    #    self._gui.addMessage(message, chat)
-
-    #def sendMessage(self, message: str, chat):
-    #    pass
-
     #####################################
     ### Shuts server and socket down  ###
     #####################################
