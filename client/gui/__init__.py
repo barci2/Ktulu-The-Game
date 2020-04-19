@@ -15,6 +15,7 @@ class GUI(QtWidgets.QMainWindow):
     def __init__(self, rect=QtCore.QRect(60, 60, 700, 500), *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.setGeometry(rect)
+        self.setWindowTitle("Ktulu")
 
         self._central_widget = QtWidgets.QWidget()
 
@@ -68,6 +69,11 @@ class GUI(QtWidgets.QMainWindow):
         self._players_list.addPlayer(player)
         if self._waiting:
             self._waiting_screen.addPlayer(player)
+
+    def removePlayer(self, player):
+        self._players_list.removePlayer(player)
+        if self._waiting:
+            self._waiting_screen.removePlayer(player)
 
     def addMessage(self, message, chat):
         self._chat.newMessage(message, chat)

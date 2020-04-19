@@ -1,28 +1,56 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
 from .layoutCreator import createLayout
 
-class PlayerLabel(QtWidgets.QLabel):
-    def __init__(self, player, *args, **kwargs):
+class PlayerLabel(QtWidgets.QWidget):
+    def __init__(self, player, kick_request, kill_request, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.setText(player['name'])
-        self.setStyleSheet("border: 1px solid black;")
+        widgets = []
+
+        if kick_request != None:
+            button = QtWidgets.QPushButton("Kick")
+            button.clicked.connect(kick_request)
+            widgets.append(button)
+
+        if kill_request != None:
+            button = QtWidgets.QPushButton("Kill")
+            button.clicked.connect(kill_request)
+            widgets.append(button)
+
+        widgets.append(QtWidgets.QLabel(player['name']))
+
+        self.setLayout(createLayout(QtWidgets.QHBoxLayout, widgets))
 
 
 class PlayersBox(QtWidgets.QWidget):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, role, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self._is_master = (role == "Master") # Czy bedzie dzialac poprawnie?
 
         self._layout = createLayout(QtWidgets.QVBoxLayout, ["Stretch"])
+        self._labels = {}
 
         self.setLayout(self._layout)
 
     def addPlayer(self, player):
-        self._layout.addWidget(PlayerLabel(player))
+        kick_request = None
+        kill_request = None
+        if self._is_master:
+            pass
+            # kick_request = request
+            # kill_request = request
+        label = PlayerLabel(player, kick_request, kill_request)
+        self._labels[player] = label
+        self._layout.addWidget(label)
+
+    def removePlayer(self, player):
+        label = self._labels[player]
+        self._layout.removeAt(label)
+        self._labels.pop(player)
 
 
 class PlayersList(QtWidgets.QWidget):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, role, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self._scroll_area = QtWidgets.QScrollArea()
@@ -32,12 +60,16 @@ class PlayersList(QtWidgets.QWidget):
         self._scroll_area.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self._scroll_area.setWidgetResizable(True)
 
-        self._players_box = PlayersBox()
+        self._players_box = PlayersBox(role)
         self._scroll_area.setWidget(self._players_box)
 
         self.setLayout(createLayout(QtWidgets.QVBoxLayout, [self._scroll_area]))
 
     def addPlayer(self, player):
         self._players_box.addPlayer(player)
+
+    def removePlayer(self, player):
+        self._players_box.removePlayer(player)
+
 
 

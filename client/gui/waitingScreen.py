@@ -14,4 +14,7 @@ class WaitingScreen(QtWidgets.QWidget):
         	]))
 
     def addPlayer(self, player):
-    	self._players_list.addPlayer(players)
+        self._players_list.addPlayer(player)
+
+    def removePlayer(self, player):
+        self._players_list.removePlayer(player)
