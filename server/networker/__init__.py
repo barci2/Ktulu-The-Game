@@ -8,7 +8,7 @@ from ..              import gameKernel
 from base.decorators import toThread
 import ipaddress
 import base.requests
-
+import urllib.request
 #######################
 ### Networker class ###
 #######################
@@ -47,15 +47,7 @@ class Networker:
     #######################
 
     def getServerCode(self):
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        try:
-            s.connect(('10.255.255.255', 1))
-            return ipaddress.ip_address(s.getsockname()[0])
-        except:
-            print("IP getting error.")
-            return ipaddress.ip_address('127.0.0.1')
-        finally:
-            s.close()
+        return ipaddress.ip_address(urllib.request.urlopen('http://ifconfig.me/ip').read().decode())
 
     ################################################
     ### I don't know what this function is doing ###
