@@ -116,10 +116,12 @@ class Networker:
             print(b"Server received: " + data)
             data_after_split = data.split(b'#SEPARATOR#')
             data_after_split = data_after_split[:-1]
+            print(data_after_split)
             for data_element in data_after_split:
-                print(b"Data element: " + data_element)
-                request = pickle.load(data)
-                self.handle(request)
+                print(str(threading.current_thread()) + str(b"Data element: " + data_element))
+                request = pickle.loads(data_element)
+                self.handle(addr, request)
+                print("Handled")
 
 
     def startSending(self, addr, conn):
@@ -136,7 +138,10 @@ class Networker:
     ####################################
 
     def send(self, message, player_ip):
-        self.to_send[player_ip].put(message + b'#SEPARATOR#')
+        print(player_ip)
+        if self.to_send.get(player_ip) == None:
+            self.to_send[player_ip] = queue.Queue()
+        self.to_send[player_ip].put(item=message + b'#SEPARATOR#')
 
     ##########################################################
     ### Stops server and all sockets connecting to players ###
@@ -153,12 +158,14 @@ class Networker:
         if ip not in [x.ip() for x in self.game_kernel.listPlayers()]:
             self.game_kernel.registerPlayer(ip)
             print("Player registered")
-        player = self.game_kernel.getPlayer(ip)
-        if type(request) in [base.requests.ActionInfo, base.requests.ActionRequest, base.requests.CardInfo, base.requests.InitInfo, base.requests.KickRequest, base.requests.KillInfo, base.requests.NewPlayerInfo, base.requests.WinInfo]:
-            self.game_kernel.queueRequest(request)
-        else:
-            request.set_player(player)
-            self.chat_manager.queueRequest(request)
+        #player = self.game_kernel.getPlayer(ip)
+        #if type(request) in [base.requests.ActionInfo, base.requests.ActionRequest, base.requests.CardInfo, base.requests.InitInfo, base.requests.KickRequest, base.requests.KillInfo, base.requests.NewPlayerInfo, base.requests.WinInfo]:
+        #    self.game_kernel.queueRequest(request)
+        #else:
+        #    print("GIT")
+        #    request.set_player(player)
+        #    self.chat_manager.queueRequest(request)
+
 
     def __del__(self):
         self.serverEnd()

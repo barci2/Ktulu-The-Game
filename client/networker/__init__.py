@@ -89,6 +89,7 @@ class Networker:
         sending_thread = threading.Thread(target=self.startSending)
         sending_thread.daemon = True
         sending_thread.start()
+        return 0
 
     def startSending(self):
         # there a connection to a given ip
