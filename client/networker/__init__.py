@@ -60,7 +60,8 @@ class Networker:
             self.server_adress = ipaddress.ip_address(address)
         except:
             return "Wrong code"
-        self.answer_receiver = socketserver.TCPServer((str(self.server_adress), settings.port + 1), server_handler.ServerHandler)
+        print(str(self.server_adress))
+        self.answer_receiver = socketserver.TCPServer(('0.0.0.0', settings.port + 1), server_handler.ServerHandler)
         self.from_server_connection_thread = threading.Thread(target=self.answer_receiver.serve_forever)
         self.from_server_connection_thread.daemon = True
         self.from_server_connection_thread.start()
