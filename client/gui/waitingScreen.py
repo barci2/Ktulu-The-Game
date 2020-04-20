@@ -10,7 +10,7 @@ class WaitingScreen(QtWidgets.QWidget):
         self._networker = networker
 
         widgets = [
-            QtWidgets.QLabel(code),
+            QtWidgets.QLabel("Game Code" + str(code)),
             self._players_list
             ]
 
