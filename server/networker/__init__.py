@@ -116,3 +116,6 @@ class Networker:
         else:
             request.set_player(player)
             self.chat_manager.queueRequest(request)
+
+    def __del__(self):
+        self.serverEnd()
