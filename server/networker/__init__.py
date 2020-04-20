@@ -63,6 +63,7 @@ class Networker:
     def serverStart(self):
         server_handler.ServerHandler.setNetworker(server_handler.ServerHandler, self)
         self.server = socketserver.TCPServer((self.host, settings.port), server_handler.ServerHandler)
+        self.server.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.server_thread = threading.Thread(target=self.server.serve_forever)
         self.server_thread.daemon = True
         self.server_thread.start()
