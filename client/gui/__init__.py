@@ -58,7 +58,8 @@ class GUI(QtWidgets.QMainWindow, QueuingMachine):
             import server
             server.start()
             code = server.getServerCode()
-            self._networker.connectToServer(code,local=True)
+            if self._networker.connectToServer(code,local=True)!=0:
+                exit()
         else:
             code = self.enterCode()
 
