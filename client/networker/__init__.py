@@ -60,11 +60,13 @@ class Networker:
         except:
             return "Wrong code"
         self.answer_receiver = socketserver.TCPServer(('0.0.0.0', settings.port + 1), server_handler.ServerHandler)
+        self.answer_receiver.allow_reuse_address=True
         self.from_server_connection_thread = threading.Thread(target=self.answer_receiver.serve_forever)
         self.from_server_connection_thread.daemon = True
         self.from_server_connection_thread.start()
+        self.sock.connect(('localhost',settings.port) if local else (str(self.server_adress), settings.port))
         try:
-            self.sock.connect(('localhost',settings.port) if local else (str(self.server_adress), settings.port))
+            pass
         except:
             print("Unable to connect")
             return "Unable to connect"

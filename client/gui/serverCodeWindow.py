@@ -21,8 +21,8 @@ class ServerCodeWindow(QtWidgets.QDialog):
     def sendAccessKey(self):
         code = self._input.text()
         response = self._networker.connectToServer(code)
-        
-        if response is None:
+
+        if response==0:
             self._code = code
         elif not self._incorrect:
             self._layout.addWidget(QtWidgets.QLabel("Incorrect game code"))
