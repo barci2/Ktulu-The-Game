@@ -51,7 +51,22 @@ class Networker:
     #######################
 
     def getServerCode(self):
-        return ipaddress.ip_address(urllib.request.urlopen('http://ifconfig.me/ip').read().decode())
+        ip = str(ipaddress.ip_address(urllib.request.urlopen('http://ifconfig.me/ip').read().decode()))
+        ip_parts = [int(x) for x in ip.split('.')]
+        number = (ip_parts[3] + 10 ** 3 * ip_parts[2] +
+                  10 ** 6 * ip_parts[1] + 10 ** 9 * ip_parts[0])
+        letters = [
+            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q',
+            'r', 's', 't', 'u', 'w', 'v', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
+            'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'W', 'X', 'Y', 'Z', '1', '2', '3', '4',
+            '5', '6', '7', '8', '9'
+        ]
+        output = ''
+        while number > 0:
+            output = output + letters[int(number % 60)]
+            number = (number - (number % 60)) / 60
+        print(output)
+        return output
 
     ################################################
     ### I don't know what this function is doing ###

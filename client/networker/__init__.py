@@ -58,12 +58,27 @@ class Networker:
     #### Starts server run at client side which is used to get answers from server ###
     ##################################################################################
 
-    def connectToServer(self, address, local=False):
+    def connectToServer(self, code, local=False):
+        letters = [
+            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q',
+            'r', 's', 't', 'u', 'w', 'v', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
+            'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'W', 'X', 'Y', 'Z', '1', '2', '3', '4',
+            '5', '6', '7', '8', '9'
+        ]
+        number = 0
+        index = 0
+        for letter in code:
+            number += 60 ** index * letters.index(letter)
+            index += 1
+        address = ''
+        for i in range(1, 5):
+            address = str(int(number % 1000)) + '.' + address
+            number = (number - number % 1000) / 1000
+        address = address[:-1]
         try:
             self.server_adress = ipaddress.ip_address(address)
         except:
             return "Wrong code"
-        print(str(self.server_adress))
         if local:
             self.sock.connect(('localhost', settings.port))
         else:
