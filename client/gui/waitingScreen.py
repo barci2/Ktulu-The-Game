@@ -9,8 +9,13 @@ class WaitingScreen(QtWidgets.QWidget):
         self._players_list = players_list
         self._networker = networker
 
+        code_le=QtWidgets.QLineEdit()
+        code_le.setReadOnly(True)
+        code_le.setText(str(code))
+
         widgets = [
-            QtWidgets.QLabel("Game Code" + str(code)),
+            QtWidgets.QLabel("Game Code"),
+            QtWidgets.QLineEdit(),
             self._players_list
             ]
 
