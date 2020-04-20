@@ -118,3 +118,6 @@ class Networker:
     def disconnect(self):
         self.answer_receiver.server_close()
         self.sock.close()
+
+    def __del__(self):
+        self.disconnect()
