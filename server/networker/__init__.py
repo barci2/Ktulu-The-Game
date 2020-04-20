@@ -30,6 +30,7 @@ class Networker:
         self.server_thread = None
         self.server_started = False
         self.client_connection_sock = {}
+        self.host = '0.0.0.0'
         server_handler.ServerHandler.command_handler = self
         self.serverStart()
 
