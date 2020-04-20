@@ -15,7 +15,7 @@ class WaitingScreen(QtWidgets.QWidget):
 
         widgets = [
             QtWidgets.QLabel("Game Code"),
-            QtWidgets.QLineEdit(),
+            code_le,
             self._players_list
             ]
 

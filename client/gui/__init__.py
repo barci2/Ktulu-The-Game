@@ -57,8 +57,8 @@ class GUI(QtWidgets.QMainWindow, QueuingMachine):
         if role == client.roles[1]:
             import server
             server.start()
-            self._networker.connectToServer(server.getServerCode())
             code = server.getServerCode()
+            self._networker.connectToServer(code,local=True)
         else:
             code = self.enterCode()
 

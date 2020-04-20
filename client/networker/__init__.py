@@ -54,21 +54,22 @@ class Networker:
     #### Starts server run at client side which is used to get answers from server ###
     ##################################################################################
 
-    def connectToServer(self, address):
-        print(ipaddress.ip_address(address))
+    def connectToServer(self, address, local=False):
         try:
             self.server_adress = ipaddress.ip_address(address)
         except:
             return "Wrong code"
-        print(str(self.server_adress))
+        print("AAA")
         self.answer_receiver = socketserver.TCPServer(('0.0.0.0', settings.port + 1), server_handler.ServerHandler)
         self.from_server_connection_thread = threading.Thread(target=self.answer_receiver.serve_forever)
         self.from_server_connection_thread.daemon = True
         self.from_server_connection_thread.start()
+        print("BBB")
         try:
-            self.sock.connect((str(self.server_adress), settings.port))
+            self.sock.connect('127.0.0.1' if local else (str(self.server_adress), settings.port))
         except:
             return "Unable to connect"
+        print("CCC")
         return 0
 
     ####################################################
