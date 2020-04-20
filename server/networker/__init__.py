@@ -1,9 +1,9 @@
 # Server side networker
-import settings
-import socketserver
 import socket
 import threading
-from .               import server_handler
+import settings
+import queue
+import pickle
 from ..              import gameKernel
 from base.decorators import toThread
 import ipaddress
@@ -25,13 +25,15 @@ class Networker:
 
     @toThread
     def start(self):
+        self.receiving_threads = []
+        self.sending_threads = []
         self.local = False
         self.players = []
         self.server_thread = None
         self.server_started = False
         self.client_connection_sock = {}
+        self.to_send = {}
         self.host = 'localhost'
-        server_handler.ServerHandler.command_handler = self
         self.serverStart()
 
     ###################################
@@ -63,38 +65,69 @@ class Networker:
     ######################
 
     def serverStart(self):
-        server_handler.ServerHandler.setNetworker(server_handler.ServerHandler, self)
-        self.server = socketserver.TCPServer((self.host, settings.port), server_handler.ServerHandler)
-        self.server.allow_reuse_address=True
-        self.server_thread = threading.Thread(target=self.server.serve_forever)
-        self.server_thread.daemon = True
-        self.server_thread.start()
-        self.server_started = True
+        # There a function which starts server
+        connection_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        connection_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        connection_socket.bind(('0.0.0.0', settings.port))
+        connection_socket.listen()
+        while True:
+            conn, addr = connection_socket.accept()
+            # conn to jest połączenie, na którym będę wysyłał informacje w obie strony
+            self.receiving_threads.append(
+                threading.Thread(target=self.startReceiving, args=(addr, conn,))
+            )
+            self.receiving_threads[-1].daemon = True
+            self.receiving_threads[-1].start()
+            self.sending_threads.append(
+                threading.Thread(target=self.startSending, args=(addr, conn,))
+            )
+            self.sending_threads[-1].daemon = True
+            self.sending_threads[-1].start()
+            print("Zaczynamy połączenie")
+
+
 
     #####################################################
     ### Starts connection to the client with given ip ###
     #####################################################
 
-    def startClientConnection(self, client_ip):
-        client_ip = str(client_ip)
-        self.client_connection_sock[client_ip] = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.client_connection_sock[client_ip].connect((client_ip, settings.port + 1))
+    def startReceiving(self, addr, conn):
+        # there a connection to a given ip
+        print("Łączenie odbiorowe z klientem o adresie " + str(addr))
+        self.to_send[addr[0]] = queue.Queue()
+        while True:
+            data = conn.recv(1024)
+            # There will be receiving data
+            print(b"Server received: " + data)
+            data_after_split = data.split(b'#SEPARATOR#')
+            data_after_split = data_after_split[:-1]
+            for data_element in data_after_split:
+                print(b"Data element: " + data_element)
+                request = pickle.load(data)
+                self.handle(request)
 
-    ##################################
-    ### Send message to the player ###
-    ##################################
 
-    def send(self, message, player):
-        self.client_connection_sock[str(player.ip())].sendall(message + b'#SEPARATOR#')
+    def startSending(self, addr, conn):
+        # there a connection to a given ip
+        print("Łączenie wysyłaniowe z klientem o adresie " + str(addr))
+        self.to_send[addr[0]] = queue.Queue()
+        while True:
+            if not self.to_send[addr[0]].empty():
+                mes = self.to_send[addr[0]].get()
+                conn.sendall(mes)
+
+    ####################################
+    ### Send message to the given ip ###
+    ####################################
+
+    def send(self, message, player_ip):
+        self.to_send[player_ip].put(message + b'#SEPARATOR#')
 
     ##########################################################
     ### Stops server and all sockets connecting to players ###
     ##########################################################
     def serverEnd(self):
-        for key, socket_to_close in self.client_connection_sock.items():
-            socket_to_close.close()
-        self.server.shutdown()
-        self.server.server_close()
+        pass
 
     ##########################################################
     ###                 Handles all requests               ###

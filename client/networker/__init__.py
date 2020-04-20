@@ -5,10 +5,12 @@
 #importing network modules
 import socket
 import random
-import socketserver
+import queue
 import threading
 import ipaddress
 import urllib.request
+import pickle
+import base
 
 #importing application modules
 import settings
@@ -26,6 +28,7 @@ class Networker:
     ### Gets IP of the client ###
     #############################
     def get_ip(self):
+        print(ipaddress.ip_address(urllib.request.urlopen('http://ifconfig.me/ip').read().decode()))
         return ipaddress.ip_address(urllib.request.urlopen('http://ifconfig.me/ip').read().decode())
 
     ##########################################
@@ -34,6 +37,7 @@ class Networker:
 
     @toThread
     def start(self):
+        self.to_send = queue.Queue()
         self.client_id = random.randint(1, 10000000000000)
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.IP = self.get_ip()
@@ -59,29 +63,53 @@ class Networker:
             self.server_adress = ipaddress.ip_address(address)
         except:
             return "Wrong code"
-        self.answer_receiver = socketserver.TCPServer(('0.0.0.0', settings.port + 1), server_handler.ServerHandler)
-        self.answer_receiver.allow_reuse_address=True
-        self.from_server_connection_thread = threading.Thread(target=self.answer_receiver.serve_forever)
-        self.from_server_connection_thread.daemon = True
-        self.from_server_connection_thread.start()
-        self.sock.connect(('localhost',settings.port) if local else (str(self.server_adress), settings.port))
-        try:
-            pass
-        except:
-            print("Unable to connect")
-            return "Unable to connect"
-        return 0
+        print(str(self.server_adress))
+        if local:
+            self.sock.connect(('localhost', settings.port))
+        else:
+            self.sock.connect((str(self.server_adress), settings.port))
+        answer_thread = threading.Thread(target=self.answerReceiver)
+        answer_thread.daemon = True
+        answer_thread.start()
+        sending_thread = threading.Thread(target=self.startSending)
+        sending_thread.daemon = True
+        sending_thread.start()
+
+    def startSending(self):
+        # there a connection to a given ip
+        print("Łączenie wysyłaniowe z serwerem")
+        while True:
+            if not self.to_send.empty():
+                print("Coś zostanie zaraz wysłane")
+                mes = self.to_send.get()
+                self.sock.sendall(mes + b"#SEPARATOR#")
 
     ####################################################
     ### Sends request with a separator to the server ###
     ####################################################
 
-    def send(self, request, *kwords, **args):
-        self.sock.sendall(str(self.IP).encode() + b'#IP#' + request + b'#SEPARATOR#')
+    def send(self, message, *kwords, **args):
+        self.to_send.put(message)
 
     #############################################
     ### Returns a response to a given request ###
     #############################################
+
+    def answerReceiver(self):
+        while True:
+            data = self.sock.recv(1024)
+            print(b"Client received:" + ans)
+            data_after_split = data.split(b'#SEPARATOR#')
+            data_after_split = data_after_split[:-1]
+            for data_element in data_after_split:
+                print(b"Data element: " + data_element)
+                request = pickle.load(data)
+                if self.awaitResponses.get(request.id) is not None:
+                    self.responses[request.id()] = request
+                    self.awaitResponses[request.id()].set()
+                    self.handle(request)
+
+
 
     def awaitResponse(self, request):
         if self.responses.get(request.id()) is not None:
@@ -89,7 +117,9 @@ class Networker:
         self.awaitResponses[request.id()] = threading.Event()
         self.awaitResponses[request.id()].wait()
         print("Response get")
-        return self.responses[request.id()]
+        awaited_response = self.responses[request.id()]
+        self.responses[request.id()] = None
+        return awaited_response
 
     #######################################################################
     ### Function used by server side server handler to serve a response ###
@@ -110,8 +140,9 @@ class Networker:
     #####################################
 
     def disconnect(self):
-        self.answer_receiver.server_close()
+        print("Disconnecting...")
         self.sock.close()
 
     def __del__(self):
-        self.disconnect()
+        pass
+        #self.disconnect()
