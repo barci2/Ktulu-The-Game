@@ -16,12 +16,18 @@ class ServerCodeWindow(QtWidgets.QDialog):
         self.setLayout(self._layout)
 
         self._incorrect = False
+        self._closing=False
 
     def sendAccessKey(self):
         response = self._networker.connectToServer(self._input.text())
-        
+
         if response is None:
+            self._closing=True
             self.close()
         elif not self._incorrect:
             self._layout.addWidget(QtWidgets.QLabel("Incorrect game code"))
             self._incorrect = True
+
+    def closeEvent(self,event):
+        if not self._closing:
+            exit()
