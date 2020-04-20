@@ -14,7 +14,6 @@ class ServerHandler(socketserver.BaseRequestHandler):
     ################################################################
 
     def handle(self):
-        print("server handler called")
         while 1:
             self.data = self.request.recv(1024).strip()
             if self.data == b'':

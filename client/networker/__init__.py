@@ -64,7 +64,7 @@ class Networker:
         self.from_server_connection_thread.daemon = True
         self.from_server_connection_thread.start()
         try:
-            self.sock.connect('localhost' if local else (str(self.server_adress), settings.port))
+            self.sock.connect(('localhost',settings.port) if local else (str(self.server_adress), settings.port))
         except:
             print("Unable to connect")
             return "Unable to connect"
