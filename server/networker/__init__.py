@@ -31,6 +31,7 @@ class Networker:
         self.server_started = False
         self.client_connection_sock = {}
         server_handler.ServerHandler.command_handler = self
+        self.serverStart()
 
     ###################################
     ### Setters of basic parameters ###
