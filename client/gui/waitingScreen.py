@@ -3,14 +3,14 @@ from .layoutCreator import createLayout
 from base import requests
 
 class WaitingScreen(QtWidgets.QWidget):
-    def __init__(self, networker, players_list, role, *args, **kwargs):
+    def __init__(self, networker, players_list, role, code, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self._players_list = players_list
         self._networker = networker
 
         widgets = [
-            QtWidgets.QLabel("Game Code"),
+            QtWidgets.QLabel("Game Code" + str(code)),
             self._players_list
             ]
 
@@ -25,3 +25,6 @@ class WaitingScreen(QtWidgets.QWidget):
     def startGame(self):
         request = requests.LaunchRequest(self._networker)
         request.send()
+
+    def closeEvent(self, event):
+        exit()

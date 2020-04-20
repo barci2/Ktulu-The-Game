@@ -53,15 +53,17 @@ class GUI(QtWidgets.QMainWindow, QueuingMachine):
         role = self.chooseRole()
         self.setRole(role)
 
+        code = ""
         if role == client.roles[1]:
             import server
             server.start()
             self._networker.connectToServer(server.getServerCode())
+            code = server.getServerCode()
         else:
-            enter_code = ServerCodeWindow(self._networker)
-            enter_code.exec_()
+            code = self.enterCode()
 
-        self._waiting_screen = WaitingScreen(self._networker, self._players_list, role)
+        self._waiting_screen = WaitingScreen(
+            self._networker, self._players_list, role, code)
         self.setCentralWidget(self._waiting_screen)
         self.show()
 
@@ -71,6 +73,10 @@ class GUI(QtWidgets.QMainWindow, QueuingMachine):
     def chooseRole(self):
         role_window = ChooseRoleWindow()
         return role_window.choose()
+
+    def enterCode(self):
+        code_window = ServerCodeWindow(self._networker)
+        return code_window.enterCode()
 
     ###############
     ### Setters ###
