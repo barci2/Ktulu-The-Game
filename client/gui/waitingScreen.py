@@ -15,7 +15,8 @@ class WaitingScreen(QtWidgets.QWidget):
             ]
 
         if role == "Master":
-            button = QtWidgets.QPushButton("Start game")
+            button = QtWidgets.QPushButton()
+            button.setText("Start game")
             button.clicked.connect(self.startGame)
             widgets.append(button)
 

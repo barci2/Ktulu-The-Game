@@ -63,6 +63,7 @@ class GUI(QtWidgets.QMainWindow, QueuingMachine):
 
         self._waiting_screen = WaitingScreen(self._networker, self._players_list, role)
         self.setCentralWidget(self._waiting_screen)
+        self.show()
 
     def startGame(self):
         self.setCentralWidget(self._central_widget)
