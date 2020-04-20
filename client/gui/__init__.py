@@ -47,7 +47,6 @@ class GUI(QtWidgets.QMainWindow, QueuingMachine):
 
         self.setCentralWidget(self._central_widget)
 
-    @toThread
     def start(self):
         QueuingMachine.start(self)
 
