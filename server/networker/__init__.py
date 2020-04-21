@@ -121,8 +121,13 @@ class Networker:
             print(data_after_split)
             for data_element in data_after_split:
                 print(str(threading.current_thread()) + str(b"Data element: " + data_element))
+<<<<<<< HEAD
                 request = base.requests.request.Request(self, data_element, player=self.game_kernel.getPlayer(addr[0]))
                 self.handle(addr, request)
+=======
+                print("addr[0]: " + addr[0])
+                self.handle(addr[0], data_element)
+>>>>>>> 30c58d87cd8ba198f1a3578834b391726600b637
                 print("Handled")
 
 
@@ -155,12 +160,12 @@ class Networker:
     ###                 Handles all requests               ###
     ##########################################################
 
-    def handle(self, ip, request):
-        print("Server is handling now:  " +str(request) + " from " + str(ip))
+    def handle(self, ip, data_element):
         if ip not in [x.ip() for x in self.game_kernel.listPlayers()]:
-            player=self.game_kernel.registerPlayer(ip[0])
+            player=self.game_kernel.registerPlayer(ip)
             print("Player registered")
-        print(str(type(request)))
+            print(self.game_kernel.listPlayers())
+        request = base.requests.request.Request(self, data_element, player=self.game_kernel.getPlayer(ip))
         if type(request) in [InitRequest,ActionRequest,KillRequest,KickRequest,LaunchRequest]:
             self.game_kernel.queueRequest(request)
         else:
