@@ -29,8 +29,10 @@ class Request():
 
         if len(args)+len(kwargs)==2:
             self._load(*args,**kwargs)
-        elif len(args)+len(kwargs)==1:
+        elif len(args)+len(kwargs)==1 and type((list(args)+list(kwargs.values()))[0])!=bytes:
             self._initResponse(*args,**kwargs)
+        elif len(args)+len(kwargs)==1 and type((list(args)+list(kwargs.values()))[0])==bytes:
+            self._load(*args,**kwargs)
         elif len(args)+len(kwargs)==0:
             self._initNew()
         else:
@@ -55,7 +57,7 @@ class Request():
         self._player=response.player()
         self._original=False
 
-    def _load(self,message,player):
+    def _load(self,message,player=None):
         try:
             obj=pickle.loads(message)
         except:

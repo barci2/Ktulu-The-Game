@@ -105,7 +105,7 @@ class GUI(QtWidgets.QMainWindow, QueuingMachine):
     ### Requests Management ###
     ###########################
     def processRequest(self, request):
-        print(type(request),'WWW')
+        print(type(request),'request from server')
         if type(request) == requests.KickInfo:
             self.proccessKickInfo(request)
         elif type(request) == requests.KillInfo:
