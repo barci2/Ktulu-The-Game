@@ -6,6 +6,7 @@ import queue
 import pickle
 from ..              import gameKernel
 from base.decorators import toThread
+import base
 import ipaddress
 from base.requests   import *
 import base.requests
