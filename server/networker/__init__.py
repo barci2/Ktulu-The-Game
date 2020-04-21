@@ -121,7 +121,7 @@ class Networker:
             print(data_after_split)
             for data_element in data_after_split:
                 print(str(threading.current_thread()) + str(b"Data element: " + data_element))
-                request = base.requests.request.Request(self, data_element, player=self.game_kernel.getPlayer(str(addr[0])))
+                request = base.requests.request.Request(self, data_element, player=self.game_kernel.getPlayer(addr[0]))
                 self.handle(addr, request)
                 print("Handled")
 
