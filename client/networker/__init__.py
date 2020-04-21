@@ -77,12 +77,12 @@ class Networker:
         address = address[:-1]
         try:
             self.server_adress = ipaddress.ip_address(address)
+            if local:
+                self.sock.connect(('localhost', settings.port))
+            else:
+                self.sock.connect((str(self.server_adress), settings.port))
         except:
             return "Wrong code"
-        if local:
-            self.sock.connect(('localhost', settings.port))
-        else:
-            self.sock.connect((str(self.server_adress), settings.port))
         answer_thread = threading.Thread(target=self.answerReceiver)
         answer_thread.daemon = True
         answer_thread.start()

@@ -84,5 +84,5 @@ class Request():
             raise TypeError("request does not inherit Request type")
         networker = self._networker
         self._networker = None
-        networker.send(pickle.dumps(self),player.ip())
+        networker.send(*((pickle.dumps(self),player.ip()) if player!=None else (pickle.dumps(self),)))
         self._networker = networker

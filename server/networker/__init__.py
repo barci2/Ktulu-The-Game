@@ -7,7 +7,7 @@ import pickle
 from ..              import gameKernel
 from base.decorators import toThread
 import ipaddress
-import base.requests
+from base.requests   import *
 import urllib.request
 #######################
 ### Networker class ###
@@ -156,13 +156,12 @@ class Networker:
     def handle(self, ip, request):
         print("Server is handling now:  " +str(request) + " from " + str(ip))
         if ip not in [x.ip() for x in self.game_kernel.listPlayers()]:
-            self.game_kernel.registerPlayer(ip)
+            player=self.game_kernel.registerPlayer(ip[0])
             print("Player registered")
-        player = self.game_kernel.getPlayer(ip)
-        if type(request) in [base.requests.ActionInfo, base.requests.ActionRequest, base.requests.CardInfo, base.requests.InitInfo, base.requests.KickRequest, base.requests.KillInfo, base.requests.NewPlayerInfo, base.requests.WinInfo]:
+        print(str(type(request)))
+        if type(request) in [InitRequest,ActionRequest,KillRequest,KickRequest,LaunchRequest]:
             self.game_kernel.queueRequest(request)
         else:
-            print("GIT")
             request.set_player(player)
             self.chat_manager.queueRequest(request)
 

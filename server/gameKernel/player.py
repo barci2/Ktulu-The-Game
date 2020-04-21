@@ -18,7 +18,6 @@ class Player(IdObject):
     def __init__(self,ip,networker,game_kernel):
         global _players_ids
         super().__init__(_players_ids)
-
         self._ip=(ip if type(ip)==ipaddress.IPv4Address else ipaddress.ip_address(ip))
         self._card=None
         self._networker=networker
