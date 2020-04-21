@@ -27,7 +27,7 @@ class ServerCodeWindow(QtWidgets.QDialog):
         code = self._input.text()
         name = self._name_le.text()
         response = self._networker.connectToServer(code)
-        if response==0 and self._name!="":
+        if response==0 and name!="":
             self._code = code
             self._name = name
             self.accept()
