@@ -67,7 +67,6 @@ class Networker:
         while number > 0:
             output = output + letters[int(number % 60)]
             number = (number - (number % 60)) / 60
-        print(output)
         return output
 
     ################################################
@@ -115,24 +114,20 @@ class Networker:
         while True:
             data = conn.recv(1024)
             # There will be receiving data
-            print(b"Server received: " + data)
             data_after_split = data.split(b'#SEPARATOR#')
             data_after_split = data_after_split[:-1]
-            print(data_after_split)
             for data_element in data_after_split:
-                print(str(threading.current_thread()) + str(b"Data element: " + data_element))
-                print("addr[0]: " + addr[0])
                 self.handle(addr[0], data_element)
-                print("Handled")
 
 
     def startSending(self, addr, conn):
         # there a connection to a given ip
         print("Łączenie wysyłaniowe z klientem o adresie " + str(addr))
-        self.to_send[addr[0]] = queue.Queue()
+        self.to_send[ipaddress.ip_address(addr[0])] = queue.Queue()
+        print(ipaddress.ip_address(addr[0]))
         while True:
-            if not self.to_send[addr[0]].empty():
-                mes = self.to_send[addr[0]].get()
+            if not self.to_send[ipaddress.ip_address(addr[0])].empty():
+                mes = self.to_send[ipaddress.ip_address(addr[0])].get()
                 conn.sendall(mes)
 
     ####################################
@@ -140,10 +135,13 @@ class Networker:
     ####################################
 
     def send(self, message, player_ip):
+
         print(player_ip)
         if self.to_send.get(player_ip) == None:
             self.to_send[player_ip] = queue.Queue()
         self.to_send[player_ip].put(item=message + b'#SEPARATOR#')
+        print(type(player_ip))
+        print(str(self.to_send[player_ip]) + str(player_ip))
 
     ##########################################################
     ### Stops server and all sockets connecting to players ###
@@ -158,8 +156,6 @@ class Networker:
     def handle(self, ip, data_element):
         if ip not in [x.ip() for x in self.game_kernel.listPlayers()]:
             player=self.game_kernel.registerPlayer(ip)
-            print("Player registered")
-            print(self.game_kernel.listPlayers())
         request = base.requests.request.Request(self, data_element, player=self.game_kernel.getPlayer(ip))
         if type(request) in [InitRequest,ActionRequest,KillRequest,KickRequest,LaunchRequest]:
             self.game_kernel.queueRequest(request)

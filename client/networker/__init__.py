@@ -97,7 +97,6 @@ class Networker:
         print("Łączenie wysyłaniowe z serwerem")
         while True:
             if not self.to_send.empty():
-                print("Coś zostanie zaraz wysłane")
                 mes = self.to_send.get()
                 self.sock.sendall(mes + b"#SEPARATOR#")
 
@@ -115,11 +114,9 @@ class Networker:
     def answerReceiver(self):
         while True:
             data = self.sock.recv(1024)
-            print(b"Client received:" + data)
             data_after_split = data.split(b'#SEPARATOR#')
             data_after_split = data_after_split[:-1]
             for data_element in data_after_split:
-                print(b"Data element: " + data_element)
                 request = base.requests.request.Request(self, data_element)
                 if self.awaitResponses.get(request.id) is not None:
                     self.responses[request.id()] = request
