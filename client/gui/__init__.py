@@ -64,7 +64,7 @@ class GUI(QtWidgets.QMainWindow, QueuingMachine):
             name=self.enterName()
         else:
             name,code = self.enterCode()
-            
+
         requests.InitRequest(self._networker,name).send()
 
         self._waiting_screen = WaitingScreen(
@@ -105,12 +105,13 @@ class GUI(QtWidgets.QMainWindow, QueuingMachine):
     ### Requests Management ###
     ###########################
     def processRequest(self, request):
+        print(type(request),'WWW')
         if type(request) == requests.KickInfo:
             self.proccessKickInfo(request)
         elif type(request) == requests.KillInfo:
             self.proccessKillInfo(request)
         elif type(request) == requests.NewPlayerInfo:
-            self.preccessNewPlayerInfo(request)
+            self.proccessNewPlayerInfo(request)
         elif type(request) == requests.InitInfo:
             self.proccessInitInfo(request)
 

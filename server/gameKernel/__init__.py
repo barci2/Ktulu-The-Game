@@ -53,7 +53,7 @@ class GameKernel(QueuingMachine):
 
     def getPlayer(self,ip):
         ip=(ip if type(ip)==ipaddress.IPv4Address else ipaddress.ip_address(ip))
-        return self._players_ips[ip]
+        return self._manitou if self._manitou.ip()==ip else self._players_ips[ip]
 
     def listPlayers(self):
         return list(self._players_ips.values())
