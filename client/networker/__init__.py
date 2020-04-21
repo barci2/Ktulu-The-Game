@@ -121,7 +121,7 @@ class Networker:
                 if self.awaitResponses.get(request.id) is not None:
                     self.responses[request.id()] = request
                     self.awaitResponses[request.id()].set()
-                    self.handle(request)
+                self.handle(request)
 
 
 
@@ -144,6 +144,7 @@ class Networker:
         self.responses[response.id()] = response
 
     def handle(self, request):
+        print("handle")
         if type(request) in [base.requests.ActionInfo, base.requests.ActionRequest, base.requests.CardInfo, base.requests.InitInfo, base.requests.KickRequest, base.requests.KillInfo, base.requests.NewPlayerInfo, base.requests.WinInfo]:
             self._gui.queueRequest(request)
         else:

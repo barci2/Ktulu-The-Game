@@ -129,6 +129,7 @@ class Networker:
             if not self.to_send[ipaddress.ip_address(addr[0])].empty():
                 mes = self.to_send[ipaddress.ip_address(addr[0])].get()
                 conn.sendall(mes)
+                print('wysyłanko')
 
     ####################################
     ### Send message to the given ip ###
