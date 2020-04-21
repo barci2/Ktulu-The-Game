@@ -119,7 +119,7 @@ class Networker:
             print(data_after_split)
             for data_element in data_after_split:
                 print(str(threading.current_thread()) + str(b"Data element: " + data_element))
-                request = pickle.loads(data_element)
+                request = base.requests.request.Request(self, data_element, player=self.game_kernel.getPlayer('addr'))
                 self.handle(addr, request)
                 print("Handled")
 

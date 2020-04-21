@@ -50,7 +50,7 @@ class Request():
 
         self._original=True
 
-    def _initResponse(self,response):
+    def _initResponse(self, response):
         self._id=response.id()
         self._player=response.player()
         self._original=False

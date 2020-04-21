@@ -11,6 +11,7 @@ import ipaddress
 import urllib.request
 import pickle
 import base
+import base.requests
 
 #importing application modules
 import settings
@@ -114,12 +115,12 @@ class Networker:
     def answerReceiver(self):
         while True:
             data = self.sock.recv(1024)
-            print(b"Client received:" + ans)
+            print(b"Client received:" + data)
             data_after_split = data.split(b'#SEPARATOR#')
             data_after_split = data_after_split[:-1]
             for data_element in data_after_split:
                 print(b"Data element: " + data_element)
-                request = pickle.load(data)
+                request = base.requests.request.Request(self, data_element)
                 if self.awaitResponses.get(request.id) is not None:
                     self.responses[request.id()] = request
                     self.awaitResponses[request.id()].set()
