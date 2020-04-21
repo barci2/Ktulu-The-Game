@@ -12,6 +12,7 @@ import urllib.request
 import pickle
 import base
 import base.requests
+import base.separator
 
 #importing application modules
 import settings
@@ -98,7 +99,7 @@ class Networker:
         while True:
             if not self.to_send.empty():
                 mes = self.to_send.get()
-                self.sock.sendall(mes + b"#SEPARATOR#")
+                self.sock.sendall(base.separator.Separator.add_separator(mes) + base.separator.Separator.separator)
 
     ####################################################
     ### Sends request with a separator to the server ###
@@ -114,9 +115,10 @@ class Networker:
     def answerReceiver(self):
         while True:
             data = self.sock.recv(1024)
-            data_after_split = data.split(b'#SEPARATOR#')
+            data_after_split = data.split(base.separator.Separator.separator)
             data_after_split = data_after_split[:-1]
             for data_element in data_after_split:
+                data_element = base.separator.Separator.remove_separator(data_element)
                 request = base.requests.request.Request(self, data_element)
                 if self.awaitResponses.get(request.id) is not None:
                     self.responses[request.id()] = request

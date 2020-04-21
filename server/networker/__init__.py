@@ -3,7 +3,7 @@ import socket
 import threading
 import settings
 import queue
-import pickle
+import base.separator
 from ..              import gameKernel
 from base.decorators import toThread
 import base
@@ -114,9 +114,10 @@ class Networker:
         while True:
             data = conn.recv(1024)
             # There will be receiving data
-            data_after_split = data.split(b'#SEPARATOR#')
+            data_after_split = data.split(base.separator.Separator.separator)
             data_after_split = data_after_split[:-1]
             for data_element in data_after_split:
+                data_element = base.separator.Separator.remove_separator(data_element)
                 self.handle(addr[0], data_element)
 
 
@@ -129,7 +130,6 @@ class Networker:
             if not self.to_send[ipaddress.ip_address(addr[0])].empty():
                 mes = self.to_send[ipaddress.ip_address(addr[0])].get()
                 conn.sendall(mes)
-                print('wysyłanko')
 
     ####################################
     ### Send message to the given ip ###
@@ -140,7 +140,7 @@ class Networker:
         print(player_ip)
         if self.to_send.get(player_ip) == None:
             self.to_send[player_ip] = queue.Queue()
-        self.to_send[player_ip].put(item=message + b'#SEPARATOR#')
+        self.to_send[player_ip].put(item=base.separator.Separator.add_separator(message) + base.separator.Separator.separator)
         print(type(player_ip))
         print(str(self.to_send[player_ip]) + str(player_ip))
 
