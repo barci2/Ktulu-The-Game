@@ -1,16 +1,17 @@
 import client
-from PyQt5 import QtWidgets, QtCore
-from .chooseRoleWindow import ChooseRoleWindow
-from .playersList import PlayersList
-from .actions import Actions
-from .voting import Voting
-from .chat import Chat
-from .serverCodeWindow import ServerCodeWindow
-from .layoutCreator import createLayout
-from .waitingScreen import WaitingScreen
-from base.decorators import toThread
+from PyQt5               import QtWidgets, QtCore
+from .chooseRoleWindow   import ChooseRoleWindow
+from .playersList        import PlayersList
+from .actions            import Actions
+from .voting             import Voting
+from .chat               import Chat
+from .serverCodeWindow   import ServerCodeWindow
+from .nameWindow         import NameWindow
+from .layoutCreator      import createLayout
+from .waitingScreen      import WaitingScreen
+from base.decorators     import toThread
 from base.queuingMachine import QueuingMachine
-from base import requests
+from base                import requests
 
 class GUI(QtWidgets.QMainWindow, QueuingMachine):
     def __init__(self, rect=QtCore.QRect(60, 60, 700, 500), *args, **kwargs):
@@ -60,8 +61,11 @@ class GUI(QtWidgets.QMainWindow, QueuingMachine):
             code = server.getServerCode()
             if self._networker.connectToServer(code,local=True)!=0:
                 exit()
+            name=self.enterName()
         else:
-            code = self.enterCode()
+            name,code = self.enterCode()
+            
+        requests.InitRequest(self._networker,name).send()
 
         self._waiting_screen = WaitingScreen(
             self._networker, self._players_list, role, code)
@@ -77,7 +81,11 @@ class GUI(QtWidgets.QMainWindow, QueuingMachine):
 
     def enterCode(self):
         code_window = ServerCodeWindow(self._networker)
-        return code_window.enterCode()
+        return code_window.getData()
+
+    def enterName(self):
+        name_window = NameWindow()
+        return name_window.getData()
 
     ###############
     ### Setters ###
