@@ -161,7 +161,7 @@ class Networker:
         if type(request) in [InitRequest,ActionRequest,KillRequest,KickRequest,LaunchRequest]:
             self.game_kernel.queueRequest(request)
         else:
-            request.set_player(player)
+            request.setPlayer(player)
             self.chat_manager.queueRequest(request)
 
 

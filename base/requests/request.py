@@ -40,7 +40,9 @@ class Request():
 
     def __del__(self):
         global _requests_ids
-        if self._id in _requests_ids and self._original:
+        if not self._original:
+            return
+        if self._id in _requests_ids:
             _requests_ids.remove(self._id)
 
     def _initNew(self):

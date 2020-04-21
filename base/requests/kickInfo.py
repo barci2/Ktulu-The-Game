@@ -8,9 +8,9 @@ from base.requests.placeholders.playerPlaceholder import PlayerPlaceholder
 # Main Class #
 ##############
 class KickInfo(Request):
-    def __init__(self,networker,player):
+    def __init__(self,networker,player_info):
         super().__init__(networker)
-        self._player=PlayerPlaceholder(player)
+        self._player_info=PlayerPlaceholder(player_info)
 
-    def player(self):
-        return self._player
+    def playerInfo(self):
+        return self._player_info

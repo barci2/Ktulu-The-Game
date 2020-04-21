@@ -51,6 +51,7 @@ class PlayersBox(QtWidgets.QWidget):
             kick_request = self.kickPlayer(player)
             kill_request = self.killPlayer(player)
         label = PlayerLabel(player, kick_request, kill_request)
+        print(label,'new label')
         self._labels[player] = label
         self._layout.addWidget(label)
 

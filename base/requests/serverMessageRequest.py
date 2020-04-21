@@ -8,17 +8,16 @@ from base.requests.placeholders                   import playerPlaceholder
 # Main Class #
 ##############
 class serverMessageRequest(Request):
-    def __init__(self, networker, message, player):
+    def __init__(self, networker, message, player_info):
         super().__init__(networker)
         self._message = message
-        self._player = playerPlaceholder.PlayerPlaceholder(player)
+        self._player_info = playerPlaceholder.PlayerPlaceholder(player_info)
 
     def message(self):
         return self._message
 
-    def player(self):
-        return self._player
+    def playerInfo(self):
+        return self._player_info
 
-    def set_player(self, player):
-        self._player = player
-
+    def setPlayer(self, player_info):
+        self._player_info = playerPlaceholder.PlayerPlaceholder(player_info)

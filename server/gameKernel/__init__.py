@@ -138,8 +138,8 @@ class GameKernel(QueuingMachine):
 
         if kill_request.player()!=self._manitou:
             return
-        if kill_request.player().id() in self._players_ids:
-            self._players_ids[kill_request.player().id()].kill()
+        if kill_request.playerInfo().id() in self._players_ids:
+            self._players_ids[kill_request.playerInfo().id()].kill()
 
     def processKickRequest(self,kick_request):
         if self._state!="Idle":
@@ -147,5 +147,5 @@ class GameKernel(QueuingMachine):
 
         if kick_request.player()!=self._manitou:
             return
-        if kick_request.player().id() in self._players_ids:
-            self._players_ids[kick_request.player().id()].kick()
+        if kick_request.playerInfo().id() in self._players_ids:
+            self._players_ids[kick_request.playerInfo().id()].kick()

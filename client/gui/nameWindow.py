@@ -4,7 +4,7 @@ from .layoutCreator import createLayout
 class NameWindow(QtWidgets.QDialog):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.setWindowTitle("Enter Server Code")
+        self.setWindowTitle("Enter Your Name")
 
         self._name_le = QtWidgets.QLineEdit()
         self._name_le.setPlaceholderText("Name")

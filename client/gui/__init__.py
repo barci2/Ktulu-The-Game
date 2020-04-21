@@ -116,13 +116,13 @@ class GUI(QtWidgets.QMainWindow, QueuingMachine):
             self.proccessInitInfo(request)
 
     def proccessKickInfo(self, request):
-        self.removePlayer(request.player())
+        self.removePlayer(request.playerInfo())
 
     def proccessKillInfo(self, request):
         pass
 
-    def preccessNewPlayerInfo(self, request):
-        self.addPlayer(request.player())
+    def proccessNewPlayerInfo(self, request):
+        self.addPlayer(request.playerInfo())
 
     def proccessInitInfo(self, request):
         players = request.listPlayers()
