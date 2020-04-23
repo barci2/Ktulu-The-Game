@@ -160,9 +160,11 @@ class Networker:
         request = base.requests.request.Request(self, data_element, player=self.game_kernel.getPlayer(ip))
         if type(request) in [InitRequest,ActionRequest,KillRequest,KickRequest,LaunchRequest]:
             self.game_kernel.queueRequest(request)
-        else:
+        elif type(request) in [sendMessageRequest, serverMessageRequest]:
             request.set_player(player)
             self.chat_manager.queueRequest(request)
+        else:
+            self.game_kernel.queueRequest(request)
 
 
     def __del__(self):
