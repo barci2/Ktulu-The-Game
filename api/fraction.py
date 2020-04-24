@@ -16,10 +16,9 @@ _fractions_ids=set()
 class Fraction(IdObject):
     def __init__(self,name):
         global _fractions_ids
-        super().__init__(_fractions_ids)
-
         self._name=name
         self._cards=set()
+        super().__init__(_fractions_ids)
 
     # Interface Functions
     def name(self):

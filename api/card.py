@@ -17,11 +17,6 @@ _cards_ids=set()
 ##############
 class Card(IdObject,Comparable):
     def __init__(self,name,fraction):
-        # Initializing IdObject
-        global _cards_ids
-        IdObject.__init__(self,_cards_ids)
-        Comparable.__init__(self)
-
         #Initializing internal variables
         self._name=name
         self._fraction=fraction
@@ -38,6 +33,11 @@ class Card(IdObject,Comparable):
             else:
                 self._actions_dict[action.groupName()].append(action)
         self.renumerateActions()
+
+        # Initializing IdObject
+        global _cards_ids
+        IdObject.__init__(self,_cards_ids)
+        Comparable.__init__(self)
 
     # Interface Functions
     def name(self):
@@ -58,6 +58,7 @@ class Card(IdObject,Comparable):
     # Management Functions
     def setPlayer(self,player):
         self._player=player
+
     def reset(self):
         super().reset()
         for action in sum(self._actions_dict.values(),[]):

@@ -12,6 +12,7 @@ class IdObject():
     def __init__(self,id_set):
         self._id_set=id_set
         self._id=None
+        self.reset()
 
     def __del__(self):
         self._id_set.remove(self._id)
