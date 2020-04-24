@@ -4,24 +4,37 @@ from base import requests
 from base.requests.placeholders.playerPlaceholder import PlayerPlaceholder
 
 class PlayerLabel(QtWidgets.QWidget):
-    def __init__(self, player, kick_request, kill_request, *args, **kwargs):
+    def __init__(self, player, kick_request, kill_request, game_started, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        widgets = []
 
+        self._game_started = game_started
         if kick_request is not None:
-            button = QtWidgets.QPushButton("Kick")
-            button.clicked.connect(kick_request)
-            widgets.append(button)
+            self._kick_button = QtWidgets.QPushButton("Kick")
+            self._kick_button.clicked.connect(kick_request)
+            if not self._game_started:
+                self._button = self._kick_button
 
         if kill_request is not None:
-            button = QtWidgets.QPushButton("Kill")
-            button.clicked.connect(kill_request)
-            widgets.append(button)
+            self._kill_button = QtWidgets.QPushButton("Kill")
+            self._kill_button.clicked.connect(kill_request)
+            if self._game_started:
+                self._button = self._kill_button
+
+        widgets = []
+        if not self._button is None:
+            widgets.append(self._button)
 
         widgets.append(QtWidgets.QLabel(player.name()))
 
-        self.setLayout(createLayout(QtWidgets.QHBoxLayout, widgets))
+        self._layout = createLayout(QtWidgets.QHBoxLayout, widgets)
+        self.setLayout(self._layout)
+
+    def startGame(self):
+        if not self._game_started:
+            self._game_started = True
+            self._button = self._kill_button
+
 
 
 class PlayersBox(QtWidgets.QWidget):
@@ -34,6 +47,7 @@ class PlayersBox(QtWidgets.QWidget):
         self.trigger.connect(self.addPlayer)
 
         self.setLayout(self._layout)
+        self._game_started = False
 
     ###############
     ### Setters ###
@@ -55,9 +69,9 @@ class PlayersBox(QtWidgets.QWidget):
             kick_request = None
             kill_request = None
             if self._is_master:
-                kick_request = self.kickPlayer(player)
                 kill_request = self.killPlayer(player)
-            label = PlayerLabel(player, kick_request, kill_request)
+                kick_request = self.kickPlayer(player)
+            label = PlayerLabel(player, kick_request, kill_request, self._game_started)
             self._labels[player.id()] = label
             self._layout.addWidget(label)
 
@@ -70,18 +84,15 @@ class PlayersBox(QtWidgets.QWidget):
     ### Requests Senders ###
     ########################
     def kickPlayer(self, player):
-        def kick():
-            request = requests.KickRequest(self._networker, player)
-            request.send()
-
-        return kick
+        return requests.KickRequest(self._networker, player).send
 
     def killPlayer(self, player):
-        def kill():
-            request = requests.KillRequest(self._networker, player)
-            request.send()
+        return requests.KillRequest(self._networker, player).send
 
-        return kill
+    def startGame(self):
+        self._game_started = True
+        for label in self._labels.values():
+            label.startGame()
 
 
 class PlayersList(QtWidgets.QWidget):
@@ -113,3 +124,7 @@ class PlayersList(QtWidgets.QWidget):
 
     def setNetworker(self, networker):
         self._players_box.setNetworker(networker)
+
+    def startGame(self):
+        self._players_box._game_started = True
+        self._players_box.startGame()
