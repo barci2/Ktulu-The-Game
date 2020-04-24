@@ -94,6 +94,7 @@ class GameKernel(QueuingMachine):
 
     # Request processing functions
     def processRequest(self,request):
+        print('request processed in gameKernel: ',request)
         if type(request)==InitRequest:
             self.processInitRequest(request)
         elif type(request)==LaunchRequest:
@@ -114,7 +115,7 @@ class GameKernel(QueuingMachine):
         for player in self.listPlayers()+[self._manitou]:
             NewPlayerInfo(self._networker,init_request.player()).send(player)
 
-        print('players list'+'\n'.join([player.id() for player in self.listPlayers()+[self._manitou]]))
+        print('players list\n'+'\n'.join([str(int.from_bytes(player.id(),'big')) for player in self.listPlayers()+[self._manitou]]))
 
     def processLaunchRequest(self,launch_request):
         if launch_request.player()!=self._manitou:
@@ -144,10 +145,15 @@ class GameKernel(QueuingMachine):
             self._players_ids[kill_request.playerInfo().id()].kill()
 
     def processKickRequest(self,kick_request):
+        print(self._state,'server state')
         if self._state!="Idle":
             return
 
+        print('kicking player with id {} in gameKernel'.format(kick_request.playerInfo().id()))
+
         if kick_request.player()!=self._manitou:
+            print('requesting player is not manitou, manitou is of id \n{}\nyour id is \n{}\n'.format(self._manitou.id(),kick_request.player().id()))
             return
         if kick_request.playerInfo().id() in self._players_ids:
+            print('kicked player with id {} in gameKernel'.format(kick_request.playerInfo().id()))
             self._players_ids[kick_request.playerInfo().id()].kick()

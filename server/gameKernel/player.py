@@ -42,7 +42,7 @@ class Player(IdObject):
         if info:
             for player in self._game_kernel.listPlayers():
                 KickInfo(self._networker,self).send(player)
-        self.networker.disconnect(self)
+        self._networker.disconnect(self)
 
     def card(self):
         return self._card

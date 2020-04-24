@@ -29,4 +29,4 @@ class IdObject():
         return self._id
 
     def __eq__(self,other):
-        return self._id==other._id if type(other)==IdObject else False
+        return self._id==other._id if issubclass(type(other),IdObject) else False

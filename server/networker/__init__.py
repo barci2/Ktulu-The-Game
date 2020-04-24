@@ -163,6 +163,7 @@ class Networker:
         print("Received request: " + str(request))
         if type(request) in [base.requests.ActionRequest, base.requests.KickRequest, base.requests.KillRequest, base.requests.LaunchRequest, base.requests.InitRequest]:
             self.game_kernel.queueRequest(request)
+            print('request: ',request,'queued')
         elif type(request) in [base.requests.sendMessageRequest, base.requests.serverMessageRequest]:
             request.set_player(player)
             self.chat_manager.queueRequest(request)
