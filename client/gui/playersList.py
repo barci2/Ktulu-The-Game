@@ -85,6 +85,7 @@ class PlayersBox(QtWidgets.QWidget):
             label = self._labels[player.id()]
             self._layout.removeWidget(label)
             self._labels.pop(player.id())
+            label.deleteLater()
 
     ########################
     ### Requests Senders ###
