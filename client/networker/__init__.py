@@ -105,6 +105,7 @@ class Networker:
     ####################################################
 
     def send(self, message, *kwords, **args):
+        print("Sending: " + str(message))
         self.to_send.put(message)
 
     #############################################
