@@ -23,10 +23,15 @@ class Separator:
             if char == 2:
                 if previous_char == 2:
                     output = output + bytes([2])
+                    previous_char = 0
                 previous_char = 2
             elif char == 1:
                 if previous_char == 2:
                     output = output + bytes([1])
+                    previous_char = 0
             else:
+                if previous_char == 2:
+                    output = output + bytes([2])
+                    previous_char = 0
                 output = output + bytes([char])
         return output

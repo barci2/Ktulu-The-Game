@@ -30,7 +30,6 @@ class Networker:
     ### Gets IP of the client ###
     #############################
     def get_ip(self):
-        print(ipaddress.ip_address(urllib.request.urlopen('http://ifconfig.me/ip').read().decode()))
         return ipaddress.ip_address(urllib.request.urlopen('http://ifconfig.me/ip').read().decode())
 
     ##########################################
@@ -114,7 +113,13 @@ class Networker:
 
     def answerReceiver(self):
         while True:
-            data = self.sock.recv(4096)
+            data = self.sock.recv(20)
+            pack = data
+            if data == b'':
+                continue
+            while pack[-2:] != base.separator.Separator.separator:
+                pack = self.sock.recv(20)
+                data += pack
             data_after_split = data.split(base.separator.Separator.separator)
             data_after_split = data_after_split[:-1]
             for data_element in data_after_split:

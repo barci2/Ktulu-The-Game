@@ -111,13 +111,20 @@ class Networker:
         print("Łączenie z klientem o adresie " + str(addr))
         self.to_send[addr[0]] = queue.Queue()
         while True:
-            data = conn.recv(4096)
+            data = conn.recv(20)
+            pack = data
+            if data == b'':
+                continue
+            while pack[-2:] != base.separator.Separator.separator:
+                pack = conn.recv(20)
+                data += pack
+
+
             # There will be receiving data
             data_after_split = data.split(base.separator.Separator.separator)
             data_after_split = data_after_split[:-1]
             for data_element in data_after_split:
                 data_element = base.separator.Separator.remove_separator(data_element)
-                print(data_element)
                 self.handle(addr[0], data_element)
 
 
