@@ -70,10 +70,10 @@ class Request():
             print("Request from {} invalid".format(player.ip()))
             return
 
+        self._original=False
         self.__class__=obj.__class__
         self.__dict__.update(obj.__dict__)
         self._player=player
-        self._original=False
 
     # Class interface functions
 
