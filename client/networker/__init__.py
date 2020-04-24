@@ -114,7 +114,7 @@ class Networker:
 
     def answerReceiver(self):
         while True:
-            data = self.sock.recv(1024)
+            data = self.sock.recv(4096)
             data_after_split = data.split(base.separator.Separator.separator)
             data_after_split = data_after_split[:-1]
             for data_element in data_after_split:
@@ -132,7 +132,6 @@ class Networker:
             return self.responses[request.id()]
         self.awaitResponses[request.id()] = threading.Event()
         self.awaitResponses[request.id()].wait()
-        print("Response get")
         awaited_response = self.responses[request.id()]
         self.responses[request.id()] = None
         return awaited_response
@@ -146,7 +145,6 @@ class Networker:
         self.responses[response.id()] = response
 
     def handle(self, request):
-        print("handle")
         if type(request) in [base.requests.ActionInfo, base.requests.ActionRequest, base.requests.CardInfo, base.requests.InitInfo, base.requests.KickRequest, base.requests.KillInfo, base.requests.NewPlayerInfo, base.requests.WinInfo]:
             self._gui.queueRequest(request)
         else:

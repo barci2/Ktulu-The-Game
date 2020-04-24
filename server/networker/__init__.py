@@ -99,7 +99,6 @@ class Networker:
             )
             self.sending_threads[-1].daemon = True
             self.sending_threads[-1].start()
-            print("Zaczynamy połączenie")
 
 
 
@@ -109,23 +108,22 @@ class Networker:
 
     def startReceiving(self, addr, conn):
         # there a connection to a given ip
-        print("Łączenie odbiorowe z klientem o adresie " + str(addr))
+        print("Łączenie z klientem o adresie " + str(addr))
         self.to_send[addr[0]] = queue.Queue()
         while True:
-            data = conn.recv(1024)
+            data = conn.recv(4096)
             # There will be receiving data
             data_after_split = data.split(base.separator.Separator.separator)
             data_after_split = data_after_split[:-1]
             for data_element in data_after_split:
                 data_element = base.separator.Separator.remove_separator(data_element)
+                print(data_element)
                 self.handle(addr[0], data_element)
 
 
     def startSending(self, addr, conn):
         # there a connection to a given ip
-        print("Łączenie wysyłaniowe z klientem o adresie " + str(addr))
         self.to_send[ipaddress.ip_address(addr[0])] = queue.Queue()
-        print(ipaddress.ip_address(addr[0]))
         while True:
             if not self.to_send[ipaddress.ip_address(addr[0])].empty():
                 mes = self.to_send[ipaddress.ip_address(addr[0])].get()
@@ -136,13 +134,10 @@ class Networker:
     ####################################
 
     def send(self, message, player_ip):
-
-        print(player_ip)
+        print("Wysyłanie wiadomości do gracza o ip:" + str(player_ip))
         if self.to_send.get(player_ip) == None:
             self.to_send[player_ip] = queue.Queue()
         self.to_send[player_ip].put(item=base.separator.Separator.add_separator(message) + base.separator.Separator.separator)
-        print(type(player_ip))
-        print(str(self.to_send[player_ip]) + str(player_ip))
 
     ##########################################################
     ### Stops server and all sockets connecting to players ###
