@@ -119,6 +119,7 @@ class Networker:
             if data == b'':
                 continue
             while pack[-2:] != base.separator.Separator.separator:
+                print("x")
                 pack = self.sock.recv(20)
                 data += pack
             data_after_split = data.split(base.separator.Separator.separator)
