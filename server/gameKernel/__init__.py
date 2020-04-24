@@ -114,6 +114,8 @@ class GameKernel(QueuingMachine):
         for player in self.listPlayers()+[self._manitou]:
             NewPlayerInfo(self._networker,init_request.player()).send(player)
 
+        print('players list'+'\n'.join([player.id() for player in self.listPlayers()+[self._manitou]]))
+
     def processLaunchRequest(self,launch_request):
         if launch_request.player()!=self._manitou:
             return
