@@ -160,7 +160,7 @@ class Networker:
         if ip not in [x.ip() for x in self.game_kernel.listPlayers()]:
             player=self.game_kernel.registerPlayer(ip)
         request = base.requests.request.Request(self, data_element, player=self.game_kernel.getPlayer(ip))
-        if type(request) in [base.requests.ActionRequest, base.requests.KickRequest, base.requests.KillRequest, base.request.LaunchRequest, base.requests.InitRequest]:
+        if type(request) in [base.requests.ActionRequest, base.requests.KickRequest, base.requests.KillRequest, base.requests.LaunchRequest, base.requests.InitRequest]:
             self.game_kernel.queueRequest(request)
         elif type(request) in [base.requests.sendMessageRequest, base.requests.serverMessageRequest]:
             request.set_player(player)
