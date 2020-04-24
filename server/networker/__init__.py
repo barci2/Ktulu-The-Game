@@ -30,7 +30,7 @@ class Networker:
         self.receiving_threads = []
         self.sending_threads = []
         self.local = False
-        self.players = []
+        self.connected_ips = []
         self.server_thread = None
         self.server_started = False
         self.client_connection_sock = {}
@@ -88,6 +88,7 @@ class Networker:
         connection_socket.listen()
         while True:
             conn, addr = connection_socket.accept()
+            self.connected_ips.append(ipaddress.ip_address(addr[0]))
             # conn to jest połączenie, na którym będę wysyłał informacje w obie strony
             self.receiving_threads.append(
                 threading.Thread(target=self.startReceiving, args=(addr, conn,))
@@ -111,6 +112,8 @@ class Networker:
         print("Łączenie z klientem o adresie " + str(addr))
         self.to_send[addr[0]] = queue.Queue()
         while True:
+            if ipaddress.ip_address(addr[0]) not in self.connected_ips:
+                return
             data = conn.recv(20)
             pack = data
             if data == b'':
@@ -132,6 +135,8 @@ class Networker:
         # there a connection to a given ip
         self.to_send[ipaddress.ip_address(addr[0])] = queue.Queue()
         while True:
+            if ipaddress.ip_address(addr[0]) not in self.connected_ips:
+                return
             if not self.to_send[ipaddress.ip_address(addr[0])].empty():
                 mes = self.to_send[ipaddress.ip_address(addr[0])].get()
                 conn.sendall(mes)
@@ -170,6 +175,9 @@ class Networker:
         else:
             self.game_kernel.queueRequest(request)
 
+    def disconnect(self, player):
+        self.connected_ips.remove(player.ip())
+        pass
 
     def __del__(self):
         self.serverEnd()
