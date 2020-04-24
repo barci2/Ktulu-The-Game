@@ -45,6 +45,7 @@ class PlayersBox(QtWidgets.QWidget):
     ### Players Management ###
     ##########################
     def addPlayer(self, player):
+<<<<<<< HEAD
         kick_request = None
         kill_request = None
         if self._is_master:
@@ -54,6 +55,17 @@ class PlayersBox(QtWidgets.QWidget):
         print(label,'new label')
         self._labels[player] = label
         self._layout.addWidget(label)
+=======
+        if not (player in self._labels):
+            kick_request = None
+            kill_request = None
+            if self._is_master:
+                kick_request = self.kickPlayer(player)
+                kill_request = self.killPlayer(player)
+            label = PlayerLabel(player, kick_request, kill_request)
+            self._labels[player] = label
+            self._layout.addWidget(label)
+>>>>>>> d58196e20d42b7ff7e99d753f52719787f71ed95
 
     def removePlayer(self, player):
         label = self._labels[player]

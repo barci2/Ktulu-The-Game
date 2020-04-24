@@ -9,6 +9,7 @@ from .serverCodeWindow   import ServerCodeWindow
 from .nameWindow         import NameWindow
 from .layoutCreator      import createLayout
 from .waitingScreen      import WaitingScreen
+from .resultWindow       import ResultWindow
 from base.decorators     import toThread
 from base.queuingMachine import QueuingMachine
 from base                import requests
@@ -24,10 +25,11 @@ class GUI(QtWidgets.QMainWindow, QueuingMachine):
         self._central_widget = QtWidgets.QWidget()
 
         self._players_list = PlayersList()
+        self._actions = Actions()
 
         self._right_panel = createLayout(QtWidgets.QVBoxLayout, [
             self._players_list,
-            Actions(),
+            self._actions,
             Voting()
         ])
 
@@ -75,6 +77,9 @@ class GUI(QtWidgets.QMainWindow, QueuingMachine):
     def startGame(self):
         self.setCentralWidget(self._central_widget)
 
+    #################################
+    ### Dialog windows Management ###
+    #################################
     def chooseRole(self):
         role_window = ChooseRoleWindow()
         return role_window.choose()
@@ -87,11 +92,18 @@ class GUI(QtWidgets.QMainWindow, QueuingMachine):
         name_window = NameWindow()
         return name_window.getData()
 
+    @toThread
+    def showGameResult(self, fraction):
+        result = ResultWindow(fraction)
+        result.exec_()
+
     ###############
     ### Setters ###
     ###############
     def setRole(self, role):
         self._players_list.setRole(role)
+        if role == client.roles[1]:
+            self.setCard(role)
 
     def setChatManager(self, chat_manager):
         self._chatManager = chat_manager
@@ -101,19 +113,35 @@ class GUI(QtWidgets.QMainWindow, QueuingMachine):
         self._networker = networker
         self._players_list.setNetworker(networker)
 
+    def setCard(self, card):
+        self._actions.setCard(card)
+
     ###########################
     ### Requests Management ###
     ###########################
     def processRequest(self, request):
         print(type(request),'request from server')
+
         if type(request) == requests.KickInfo:
             self.proccessKickInfo(request)
+
         elif type(request) == requests.KillInfo:
             self.proccessKillInfo(request)
+
         elif type(request) == requests.NewPlayerInfo:
             self.proccessNewPlayerInfo(request)
+
         elif type(request) == requests.InitInfo:
             self.proccessInitInfo(request)
+
+        elif type(request) == requests.CardInfo:
+            self.proccessCardInfo(request)
+
+        elif type(request) == requests.ActionInfo:
+            self.proccessActionInfo(request)
+
+        elif type(request) == requests.WinInfo:
+            self.proccessWinInfo(request)
 
     def proccessKickInfo(self, request):
         self.removePlayer(request.playerInfo())
@@ -122,12 +150,25 @@ class GUI(QtWidgets.QMainWindow, QueuingMachine):
         pass
 
     def proccessNewPlayerInfo(self, request):
+<<<<<<< HEAD
         self.addPlayer(request.playerInfo())
+=======
+        self.addPlayer(request.player())
+>>>>>>> d58196e20d42b7ff7e99d753f52719787f71ed95
 
     def proccessInitInfo(self, request):
         players = request.listPlayers()
         for player in players:
             self.addPlayer(player)
+
+    def proccessCardInfo(self, request):
+        self.setCard(request.card())
+
+    def proccessActionInfo(self, request):
+        self.addActionInfo(request.action())
+
+    def proccessWinInfo(self, request):
+        self.showGameResult(request.fraction())
 
     ##########################
     ### Players Management ###
@@ -152,3 +193,9 @@ class GUI(QtWidgets.QMainWindow, QueuingMachine):
 
     def switchChat(self):
         self._chat.switchChat()
+
+    ##########################
+    ### Actions Management ###
+    ##########################
+    def addActionInfo(self, action):
+        self._actions.addActionInfo(action)

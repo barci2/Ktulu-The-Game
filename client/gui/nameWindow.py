@@ -1,10 +1,14 @@
-from PyQt5 import QtWidgets
+from PyQt5          import QtWidgets
 from .layoutCreator import createLayout
 
 class NameWindow(QtWidgets.QDialog):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+<<<<<<< HEAD
         self.setWindowTitle("Enter Your Name")
+=======
+        self.setWindowTitle("Enter Name")
+>>>>>>> d58196e20d42b7ff7e99d753f52719787f71ed95
 
         self._name_le = QtWidgets.QLineEdit()
         self._name_le.setPlaceholderText("Name")
