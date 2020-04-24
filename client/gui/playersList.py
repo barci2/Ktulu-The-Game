@@ -7,7 +7,7 @@ class PlayerLabel(QtWidgets.QWidget):
     def __init__(self, player, kick_request, kill_request, game_started, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-
+        self._button = None
         self._game_started = game_started
         if kick_request is not None:
             self._kick_button = QtWidgets.QPushButton("Kick")
@@ -22,7 +22,7 @@ class PlayerLabel(QtWidgets.QWidget):
                 self._button = self._kill_button
 
         widgets = []
-        if not self._button is None:
+        if self._button is not None:
             widgets.append(self._button)
 
         widgets.append(QtWidgets.QLabel(player.name()))
@@ -33,7 +33,8 @@ class PlayerLabel(QtWidgets.QWidget):
     def startGame(self):
         if not self._game_started:
             self._game_started = True
-            self._button = self._kill_button
+            if self._kill_button is not None:
+                self._button = self._kill_button
 
 
 
