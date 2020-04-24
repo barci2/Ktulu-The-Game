@@ -150,7 +150,7 @@ class GUI(QtWidgets.QMainWindow, QueuingMachine):
         pass
 
     def proccessNewPlayerInfo(self, request):
-        self.addPlayer(request.player())
+        self.addPlayer(request.playerInfo())
 
     def proccessInitInfo(self, request):
         players = request.listPlayers()
