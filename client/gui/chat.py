@@ -30,12 +30,13 @@ class Chat(QtWidgets.QWidget):
             ])
 
         self.setLayout(self._layout)
+        self._enabled = True
 
     def setChatManager(self, chat_manager):
         self._chat_manager = chat_manager
 
     def sendMessage(self):
-        if self._text_box.text() == "":
+        if self._text_box.text() == "" or not self._enabled:
             return
 
         self._chat_manager.sendMessage(self._text_box.text())
@@ -52,6 +53,20 @@ class Chat(QtWidgets.QWidget):
         self._chats[chat_name] = MessagesScroll()
         self._messages_scroll_areas.addWidget(self._chats[chat_name])
 
-    # TODO: change "Send" button color (or sth else, to show that chat is disabled)
     def switchChat(self):
-        pass
+        if self._enabled:
+            self.disableChat()
+        else:
+            self.enableChat()
+
+    def enableChat(self):
+        self._enabled = True
+        self._text_box.setReadOnly(False)
+        self._text_box.setText("")
+
+    def disableChat(self):
+        self._enabled = False
+        self._text_box.setReadOnly(False)
+        self._text_box.setText("Chat is disabled")
+
+

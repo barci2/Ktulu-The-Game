@@ -1,6 +1,7 @@
-from PyQt5 import QtWidgets
+import client
+from PyQt5          import QtWidgets
 from .layoutCreator import createLayout
-from base import requests
+from base           import requests
 
 class WaitingScreen(QtWidgets.QWidget):
     def __init__(self, networker, players_list, role, code, *args, **kwargs):
@@ -19,7 +20,7 @@ class WaitingScreen(QtWidgets.QWidget):
             self._players_list
             ]
 
-        if role == "Master":
+        if role == client.roles[1]:
             button = QtWidgets.QPushButton()
             button.setText("Start game")
             button.clicked.connect(self.startGame)
@@ -28,8 +29,7 @@ class WaitingScreen(QtWidgets.QWidget):
         self.setLayout(createLayout(QtWidgets.QVBoxLayout, widgets))
 
     def startGame(self):
-        request = requests.LaunchRequest(self._networker)
-        request.send()
+        requests.LaunchRequest(self._networker).send()
 
     def closeEvent(self, event):
         exit()
