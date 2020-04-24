@@ -65,18 +65,20 @@ class PlayersBox(QtWidgets.QWidget):
     def emitAddPlayer(self, player):
         self.trigger.emit(player)
 
-    def addPlayer(self, player):
+    def addPlayer(self, player: PlayerPlaceholder):
         if not (player.id() in self._labels):
             kick_request = None
             kill_request = None
-            if self._is_master:
-                kill_request = self.killPlayer(player)
-                kick_request = self.kickPlayer(player)
+            #if self._is_master:
+            kill_request = self.killPlayer(player)
+            kick_request = self.kickPlayer(player)
             label = PlayerLabel(player, kick_request, kill_request, self._game_started)
             self._labels[player.id()] = label
+            print(f"GUI - player with id {player.id()} added")
             self._layout.addWidget(label)
 
     def removePlayer(self, player):
+        print(f"GUI - player with id {player.id()} removed")
         label = self._labels[player.id()]
         self._layout.removeAt(label)
         self._labels.pop(player.id())
@@ -85,7 +87,10 @@ class PlayersBox(QtWidgets.QWidget):
     ### Requests Senders ###
     ########################
     def kickPlayer(self, player):
-        return requests.KickRequest(self._networker, player).send
+        def kick():
+            print(f"GUI - kick (player with id {player.id()}) request sended")
+            requests.KickRequest(self._networker, player).send()
+        return kick
 
     def killPlayer(self, player):
         return requests.KillRequest(self._networker, player).send
@@ -117,7 +122,7 @@ class PlayersList(QtWidgets.QWidget):
     def setRole(self, role):
         self._players_box.setRole(role)
 
-    def addPlayer(self, player):
+    def addPlayer(self, player: PlayerPlaceholder):
         self._players_box.emitAddPlayer(player)
 
     def removePlayer(self, player):
