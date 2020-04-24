@@ -129,6 +129,7 @@ class Networker:
                 if self.awaitResponses.get(request.id) is not None:
                     self.responses[request.id()] = request
                     self.awaitResponses[request.id()].set()
+                print("client received: " + str(request))
                 self.handle(request)
 
 
@@ -153,8 +154,10 @@ class Networker:
     def handle(self, request):
         if type(request) in [base.requests.ActionInfo, base.requests.ActionRequest, base.requests.CardInfo, base.requests.InitInfo, base.requests.KickRequest, base.requests.KillInfo, base.requests.NewPlayerInfo, base.requests.WinInfo]:
             self._gui.queueRequest(request)
-        else:
+        elif type(request) in [base.requests.serverMessageRequest, base.requests.sendMessageRequest]:
             self._chatManager.queueRequest(request)
+        else:
+            self._gui.queueRequest(request)
 
     #####################################
     ### Shuts server and socket down  ###
