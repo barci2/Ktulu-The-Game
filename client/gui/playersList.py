@@ -1,7 +1,7 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
 from .layoutCreator import createLayout
 from base import requests
-
+from base.requests.placeholders.playerPlaceholder import PlayerPlaceholder
 
 class PlayerLabel(QtWidgets.QWidget):
     def __init__(self, player, kick_request, kill_request, *args, **kwargs):
@@ -25,10 +25,13 @@ class PlayerLabel(QtWidgets.QWidget):
 
 
 class PlayersBox(QtWidgets.QWidget):
+    trigger = QtCore.pyqtSignal(PlayerPlaceholder)
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._layout = createLayout(QtWidgets.QVBoxLayout, ["Stretch"])
         self._labels = {}
+        self.trigger.connect(self.addPlayer)
 
         self.setLayout(self._layout)
 
@@ -44,21 +47,24 @@ class PlayersBox(QtWidgets.QWidget):
     ##########################
     ### Players Management ###
     ##########################
+    def emitAddPlayer(self, player):
+        self.trigger.emit(player)
+
     def addPlayer(self, player):
-        if not (player in self._labels):
+        if not (player.id() in self._labels):
             kick_request = None
             kill_request = None
             if self._is_master:
                 kick_request = self.kickPlayer(player)
                 kill_request = self.killPlayer(player)
             label = PlayerLabel(player, kick_request, kill_request)
-            self._labels[player] = label
+            self._labels[player.id()] = label
             self._layout.addWidget(label)
 
     def removePlayer(self, player):
-        label = self._labels[player]
+        label = self._labels[player.id()]
         self._layout.removeAt(label)
-        self._labels.pop(player)
+        self._labels.pop(player.id())
 
     ########################
     ### Requests Senders ###
@@ -100,7 +106,7 @@ class PlayersList(QtWidgets.QWidget):
         self._players_box.setRole(role)
 
     def addPlayer(self, player):
-        self._players_box.addPlayer(player)
+        self._players_box.emitAddPlayer(player)
 
     def removePlayer(self, player):
         self._players_box.removePlayer(player)
