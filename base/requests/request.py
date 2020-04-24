@@ -40,7 +40,7 @@ class Request():
 
     def __del__(self):
         global _requests_ids
-        if not self._original:
+        if '_original' not in self._dict or not self._original:
             return
         if self._id in _requests_ids:
             _requests_ids.remove(self._id)
@@ -60,14 +60,15 @@ class Request():
         self._original=False
 
     def _load(self,message,player=None):
+        obj=pickle.loads(message)
         try:
-            obj=pickle.loads(message)
+            pass
         except:
-            print("Request from {} invalid".format(player.ip()))
+            print("Request from {} invalid".format(player.ip() if player!=None else 'server'))
             return
 
         if not issubclass(type(obj), Request):
-            print("Request from {} invalid".format(player.ip()))
+            print("Request from {} invalid".format(player.ip() if player!=None else 'server'))
             return
 
         self._original=False
