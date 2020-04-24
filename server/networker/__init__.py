@@ -160,13 +160,8 @@ class Networker:
         request = base.requests.request.Request(self, data_element, player=self.game_kernel.getPlayer(ip))
         if type(request) in [base.requests.ActionInfo, base.requests.ActionRequest, base.requests.CardInfo, base.requests.InitInfo, base.requests.KickRequest, base.requests.KillInfo, base.requests.NewPlayerInfo, base.requests.WinInfo]:
             self.game_kernel.queueRequest(request)
-<<<<<<< HEAD
-        else:
-            request.setPlayer(player)
-=======
         elif type(request) in [base.requests.sendMessageRequest, base.requests.serverMessageRequest]:
             request.set_player(player)
->>>>>>> d58196e20d42b7ff7e99d753f52719787f71ed95
             self.chat_manager.queueRequest(request)
         else:
             self.game_kernel.queueRequest(request)
