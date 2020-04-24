@@ -66,6 +66,7 @@ class PlayersBox(QtWidgets.QWidget):
         self.trigger.emit(player)
 
     def addPlayer(self, player: PlayerPlaceholder):
+        print(f"GUI - try to add player with id {player.id()}")
         if not (player.id() in self._labels):
             kick_request = None
             kill_request = None
@@ -78,17 +79,19 @@ class PlayersBox(QtWidgets.QWidget):
             self._layout.addWidget(label)
 
     def removePlayer(self, player):
-        print(f"GUI - player with id {player.id()} removed")
-        label = self._labels[player.id()]
-        self._layout.removeAt(label)
-        self._labels.pop(player.id())
+        print(f"GUI - try to remove player with id {player.id()}")
+        if player.id() in self._labels:
+            print(f"GUI - player with id {player.id()} removed")
+            label = self._labels[player.id()]
+            self._layout.removeWidget(label)
+            self._labels.pop(player.id())
 
     ########################
     ### Requests Senders ###
     ########################
     def kickPlayer(self, player):
         def kick():
-            print(f"GUI - kick (player with id {player.id()}) request sended")
+            print(f"GUI - kick (player with id {player.id()}) request sent")
             requests.KickRequest(self._networker, player).send()
         return kick
 
